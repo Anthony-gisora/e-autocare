@@ -3,7 +3,8 @@ import LandingPage from "./components/LandingPage";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/home/Home";
 import { SignedIn, SignedOut, SignIn } from "@clerk/clerk-react";
-import Header from "./components/Header";
+import AppLayout from "./layouts/AppLayout";
+import RequestService from "./pages/RequestService/RequestService";
 
 function App() {
   return (
@@ -11,29 +12,12 @@ function App() {
       <Route
         path="/"
         element={
-          <>
-            <SignedIn>
-              <Header />
-              <Home />
-            </SignedIn>
-            <SignedOut>
-              <SignIn />
-            </SignedOut>
-          </>
+          <AppLayout>
+            <Home />
+          </AppLayout>
         }
       />
-      <Route
-        path="/signin"
-        element={
-          <>
-            <SignedOut>
-              <div className="w-full h-full flex items-center justify-center">
-                <SignIn />
-              </div>
-            </SignedOut>
-          </>
-        }
-      />
+      <Route path="/request-service/:id" element={<RequestService />} />
     </Routes>
   );
 }

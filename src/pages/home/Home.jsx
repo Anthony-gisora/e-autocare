@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const mechanics = [
   { id: 1, name: "Joe's AutoFix", distance: "0.5 km away" },
@@ -8,9 +9,14 @@ const mechanics = [
 
 const Home = () => {
   const [showMechanics, setShowMechanics] = useState(false);
+  const navigate = useNavigate();
 
   const handleRequestHelp = () => {
     setShowMechanics(true);
+  };
+
+  const handleMechanicClick = (Mechanic) => {
+    navigate(`/request-service/${Mechanic}`);
   };
 
   return (
@@ -39,7 +45,8 @@ const Home = () => {
               {mechanics.map((mech) => (
                 <li
                   key={mech.id}
-                  className="flex items-start gap-3 border-b pb-3"
+                  onClick={() => handleMechanicClick(mech.name)}
+                  className="flex items-start gap-3 border-b pb-3 cursor-pointer hover:bg-[#f1f1f1] rounded-lg p-2 transition"
                 >
                   <span className="text-xl md:text-2xl text-[#8d99ae]">📍</span>
                   <div>

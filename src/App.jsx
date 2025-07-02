@@ -17,7 +17,14 @@ function App() {
           </AppLayout>
         }
       />
-      <Route path="/request-service/:id" element={<RequestService />} />
+      <Route
+        path="/request-service/:id"
+        element={
+          <AppLayout>
+            <RequestService />
+          </AppLayout>
+        }
+      />
     </Routes>
   );
 }

@@ -27,7 +27,7 @@ function App() {
         element={
           <>
             <SignedOut>
-              <div className="">
+              <div className="w-full h-full flex items-center justify-center">
                 <SignIn />
               </div>
             </SignedOut>

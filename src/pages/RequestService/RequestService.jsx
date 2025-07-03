@@ -10,7 +10,47 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet-control-geocoder/dist/Control.Geocoder.css";
+import "leaflet-control-geocoder";
 
+// Red pin icon
+const redIcon = new L.Icon({
+  iconUrl:
+    "https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=home|FF0000",
+  iconSize: [30, 45],
+  iconAnchor: [15, 45],
+  popupAnchor: [0, -35],
+});
+
+// Search Bar Control Component
+const SearchControl = () => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map) return;
+
+    const geocoder = L.Control.geocoder({
+      defaultMarkGeocode: true,
+      placeholder: "Search location...",
+      position: "topright",
+    })
+      .on("markgeocode", function (e) {
+        const bbox = e.geocode.bbox;
+        const bounds = [
+          [bbox.getSouth(), bbox.getWest()],
+          [bbox.getNorth(), bbox.getEast()],
+        ];
+        map.fitBounds(bounds);
+      })
+      .addTo(map);
+
+    return () => map.removeControl(geocoder);
+  }, [map]);
+
+  return null;
+};
+
+// Fetch locations on move
 const FetchOnMove = ({ onFetch }) => {
   const map = useMapEvents({
     moveend: () => {
@@ -25,6 +65,7 @@ const FetchOnMove = ({ onFetch }) => {
   return null;
 };
 
+// Fit bounds to radius on load
 const FitBoundsOnLoad = ({ center, radius }) => {
   const map = useMap();
   useEffect(() => {
@@ -51,6 +92,7 @@ const EAutoCareMap = ({ id = "123" }) => {
   const [model, setModel] = useState("");
   const [issue, setIssue] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [locationInfo, setLocationInfo] = useState("");
   const fetchedRef = useRef(false);
 
   const fetchFeatures = (lat, lon) => {
@@ -81,6 +123,12 @@ const EAutoCareMap = ({ id = "123" }) => {
           };
         });
         setFeatures(points);
+
+        // Show one location name as current info (if available)
+        const named = points.find((p) => p.name !== "Unnamed");
+        if (named) {
+          setLocationInfo(named.name);
+        }
       })
       .catch((err) => console.error("Fetch failed:", err));
   };
@@ -114,42 +162,53 @@ const EAutoCareMap = ({ id = "123" }) => {
   const circleRadius = 125;
 
   return (
-    <div className="flex flex-col md:flex-row h-screen">
-      {/* Map Section (Top 70% on mobile, left 50% on desktop) */}
-      <div className="w-full md:w-1/2 h-[70%] md:h-[50%]">
-        {position && (
-          <MapContainer
+    <div className="relative h-screen w-full">
+      {/* Map Fullscreen */}
+      {position && (
+        <MapContainer
+          center={position}
+          zoom={18}
+          maxZoom={20}
+          scrollWheelZoom={true}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+          <FitBoundsOnLoad center={position} radius={500} />
+          <Circle
             center={position}
-            zoom={18}
-            maxZoom={20}
-            scrollWheelZoom={true}
-            style={{ height: "100%", width: "100%" }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <FitBoundsOnLoad center={position} radius={500} />
-            <Circle
-              center={position}
-              radius={circleRadius}
-              pathOptions={{
-                fillColor: "#ff3333",
-                color: "#cc0000",
-                fillOpacity: 0.3,
-              }}
-            />
-            <Marker position={position}>
-              <Popup>You are here</Popup>
+            radius={circleRadius}
+            pathOptions={{
+              fillColor: "#ff3333",
+              color: "#cc0000",
+              fillOpacity: 0.3,
+            }}
+          />
+          <Marker position={position} icon={redIcon}>
+            <Popup>You are here</Popup>
+          </Marker>
+          {features.map((item, index) => (
+            <Marker key={index} position={[item.lat, item.lon]}>
+              <Popup>{item.name}</Popup>
             </Marker>
-            <FetchOnMove onFetch={fetchFeatures} />
-          </MapContainer>
-        )}
+          ))}
+          <FetchOnMove onFetch={fetchFeatures} />
+          <SearchControl />
+        </MapContainer>
+      )}
+
+      {/* Top: Location Info */}
+      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md shadow-md rounded-md px-4 py-2 z-[1000]">
+        <p className="text-sm text-[#2b2d42] font-medium">
+          Current area: {locationInfo || "Detecting..."}
+        </p>
       </div>
 
-      {/* Form Section (Bottom 30% on mobile, right 50% on desktop) */}
-      <div className="w-full md:w-1/2 h-full md:h-full overflow-y-auto bg-[#edf2f4] p-4 mt-2 flex items-center justify-center">
-        <div className="w-full max-w-lg bg-white rounded-xl shadow-lg p-8 space-y-6">
+      {/* Floating Bottom Form */}
+      <div className="absolute bottom-0 left-0 w-full z-[1000]">
+        <div className="bg-white/80 backdrop-blur-md max-w-xl mx-auto m-4 p-6 rounded-xl shadow-xl space-y-6 animate-slideUp">
           <h2 className="text-2xl font-bold text-[#2b2d42]">
             Request Service from Mechanic #{id}
           </h2>
@@ -174,7 +233,7 @@ const EAutoCareMap = ({ id = "123" }) => {
               <textarea
                 value={issue}
                 onChange={(e) => setIssue(e.target.value)}
-                rows={4}
+                rows={3}
                 placeholder="Describe what's wrong..."
                 className="w-full p-3 border border-[#8d99ae] rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-[#2b2d42]"
                 required
@@ -194,6 +253,17 @@ const EAutoCareMap = ({ id = "123" }) => {
           </form>
         </div>
       </div>
+
+      {/* Animations */}
+      <style>{`
+        .animate-slideUp {
+          animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp {
+          from { transform: translateY(100%); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 };

@@ -186,14 +186,10 @@ const EAutoCareMap = ({ id = "123" }) => {
               fillOpacity: 0.3,
             }}
           />
-          <Marker position={position} icon={redIcon}>
-            <Popup>You are here</Popup>
+          <Marker position={position}>
+            <Popup>You are here </Popup>
           </Marker>
-          {features.map((item, index) => (
-            <Marker key={index} position={[item.lat, item.lon]}>
-              <Popup>{item.name}</Popup>
-            </Marker>
-          ))}
+
           <FetchOnMove onFetch={fetchFeatures} />
           <SearchControl />
         </MapContainer>

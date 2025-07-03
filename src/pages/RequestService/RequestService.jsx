@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -12,15 +12,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder";
-
-// Red pin icon
-const redIcon = new L.Icon({
-  iconUrl:
-    "https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=home|FF0000",
-  iconSize: [30, 45],
-  iconAnchor: [15, 45],
-  popupAnchor: [0, -35],
-});
+import { useUser } from "@clerk/clerk-react";
 
 // Search Bar Control Component
 const SearchControl = () => {
@@ -86,7 +78,9 @@ const FitBoundsOnLoad = ({ center, radius }) => {
   return null;
 };
 
-const EAutoCareMap = ({ id = "123" }) => {
+const RequestService = ({ id = "123" }) => {
+  const { user, isLoaded } = useUser();
+
   const [position, setPosition] = useState(null);
   const [features, setFeatures] = useState([]);
   const [model, setModel] = useState("");
@@ -94,6 +88,10 @@ const EAutoCareMap = ({ id = "123" }) => {
   const [submitting, setSubmitting] = useState(false);
   const [locationInfo, setLocationInfo] = useState("");
   const fetchedRef = useRef(false);
+
+  if (!isLoaded) {
+    return <div className="">Loading....</div>;
+  }
 
   const fetchFeatures = (lat, lon) => {
     const overpassQuery = `
@@ -187,7 +185,7 @@ const EAutoCareMap = ({ id = "123" }) => {
             }}
           />
           <Marker position={position}>
-            <Popup>You are here </Popup>
+            <Popup>You are here {user.firstName}</Popup>
           </Marker>
 
           <FetchOnMove onFetch={fetchFeatures} />
@@ -264,4 +262,4 @@ const EAutoCareMap = ({ id = "123" }) => {
   );
 };
 
-export default EAutoCareMap;
+export default RequestService;

@@ -11,15 +11,6 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Red pin icon
-const redIcon = new L.Icon({
-  iconUrl:
-    "https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=home|FF0000",
-  iconSize: [30, 45],
-  iconAnchor: [15, 45],
-  popupAnchor: [0, -35],
-});
-
 const FetchOnMove = ({ onFetch }) => {
   const map = useMapEvents({
     moveend: () => {
@@ -124,8 +115,8 @@ const EAutoCareMap = ({ id = "123" }) => {
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
-      {/* Left: Map */}
-      <div className="w-full md:w-1/2 h-1/2 md:h-full">
+      {/* Map Section (Top 70% on mobile, left 50% on desktop) */}
+      <div className="w-full md:w-1/2 h-[70%] md:h-[50%]">
         {position && (
           <MapContainer
             center={position}
@@ -139,7 +130,7 @@ const EAutoCareMap = ({ id = "123" }) => {
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             />
             <FitBoundsOnLoad center={position} radius={500} />
-            {/* <Circle
+            <Circle
               center={position}
               radius={circleRadius}
               pathOptions={{
@@ -147,22 +138,17 @@ const EAutoCareMap = ({ id = "123" }) => {
                 color: "#cc0000",
                 fillOpacity: 0.3,
               }}
-            /> */}
+            />
             <Marker position={position}>
               <Popup>You are here</Popup>
             </Marker>
-            {/* {features.map((item, index) => (
-              <Marker key={index} position={[item.lat, item.lon]}>
-                <Popup>{item.name}</Popup>
-              </Marker>
-            ))} */}
             <FetchOnMove onFetch={fetchFeatures} />
           </MapContainer>
         )}
       </div>
 
-      {/* Right: Request Form */}
-      <div className="w-full md:w-1/2 bg-[#edf2f4] p-6 flex items-center justify-center">
+      {/* Form Section (Bottom 30% on mobile, right 50% on desktop) */}
+      <div className="w-full md:w-1/2 h-full md:h-full overflow-y-auto bg-[#edf2f4] p-4 mt-2 flex items-center justify-center">
         <div className="w-full max-w-lg bg-white rounded-xl shadow-lg p-8 space-y-6">
           <h2 className="text-2xl font-bold text-[#2b2d42]">
             Request Service from Mechanic #{id}

@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useUser, useClerk, UserButton } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user } = useUser();
   const { signOut } = useClerk();
+
+  const navigate = useNavigate();
 
   return (
     <header className="w-full bg-white shadow-md fixed top-0 left-0 z-[2000]">
@@ -35,7 +38,7 @@ const Header = () => {
           <ul className="flex flex-col sm:flex-row items-center sm:space-x-6 p-4 sm:p-0">
             <li>
               <a
-                href="/"
+                onClick={() => navigate("/about")}
                 className="block py-2 px-4 text-[#2b2d42] hover:underline"
               >
                 Home

@@ -14,7 +14,6 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder";
 import { useUser } from "@clerk/clerk-react";
 
-// Search Bar Control Component
 const SearchControl = () => {
   const map = useMap();
 
@@ -42,7 +41,6 @@ const SearchControl = () => {
   return null;
 };
 
-// Fetch locations on move
 const FetchOnMove = ({ onFetch }) => {
   const map = useMapEvents({
     moveend: () => {
@@ -57,7 +55,6 @@ const FetchOnMove = ({ onFetch }) => {
   return null;
 };
 
-// Fit bounds to radius on load
 const FitBoundsOnLoad = ({ center, radius }) => {
   const map = useMap();
   useEffect(() => {
@@ -89,9 +86,18 @@ const RequestService = ({ id = "123" }) => {
   const [locationInfo, setLocationInfo] = useState("");
   const fetchedRef = useRef(false);
 
-  if (!isLoaded) {
-    return <div className="">Loading....</div>;
-  }
+  const profileIcon = L.divIcon({
+    className: "custom-avatar-icon",
+    html: `
+      <div class='flex flex-col items-center'>
+        <img src='${user.imageUrl}' class='w-10 h-10 rounded-full border-2 border-white shadow-md object-cover' />
+        <div class='w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#2b2d42] mt-[-2px]'></div>
+      </div>
+    `,
+    iconSize: [50, 60],
+    iconAnchor: [25, 60],
+    popupAnchor: [0, -60],
+  });
 
   const fetchFeatures = (lat, lon) => {
     const overpassQuery = `
@@ -121,12 +127,8 @@ const RequestService = ({ id = "123" }) => {
           };
         });
         setFeatures(points);
-
-        // Show one location name as current info (if available)
         const named = points.find((p) => p.name !== "Unnamed");
-        if (named) {
-          setLocationInfo(named.name);
-        }
+        if (named) setLocationInfo(named.name);
       })
       .catch((err) => console.error("Fetch failed:", err));
   };
@@ -159,9 +161,10 @@ const RequestService = ({ id = "123" }) => {
 
   const circleRadius = 125;
 
+  if (!isLoaded) return <div className="text-center p-4">Loading...</div>;
+
   return (
     <div className="relative h-screen w-full">
-      {/* Map Fullscreen */}
       {position && (
         <MapContainer
           center={position}
@@ -184,23 +187,22 @@ const RequestService = ({ id = "123" }) => {
               fillOpacity: 0.3,
             }}
           />
-          <Marker position={position}>
+          <Marker position={position} icon={profileIcon}>
             <Popup>You are here {user.firstName}</Popup>
           </Marker>
-
           <FetchOnMove onFetch={fetchFeatures} />
           <SearchControl />
         </MapContainer>
       )}
 
-      {/* Top: Location Info */}
+      {/* Location Info */}
       <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md shadow-md rounded-md px-4 py-2 z-[1000]">
         <p className="text-sm text-[#2b2d42] font-medium">
           Current area: {locationInfo || "Detecting..."}
         </p>
       </div>
 
-      {/* Floating Bottom Form */}
+      {/* Bottom Form */}
       <div className="absolute bottom-0 left-0 w-full z-[1000]">
         <div className="bg-white/80 backdrop-blur-md max-w-xl mx-auto m-4 p-6 rounded-xl shadow-xl space-y-6 animate-slideUp">
           <h2 className="text-2xl font-bold text-[#2b2d42]">
@@ -248,7 +250,6 @@ const RequestService = ({ id = "123" }) => {
         </div>
       </div>
 
-      {/* Animations */}
       <style>{`
         .animate-slideUp {
           animation: slideUp 0.5s ease-out;

@@ -79,7 +79,6 @@ const RequestService = ({ id = "123" }) => {
   const { user, isLoaded } = useUser();
 
   const [position, setPosition] = useState(null);
-  const [features, setFeatures] = useState([]);
   const [model, setModel] = useState("");
   const [issue, setIssue] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -126,7 +125,7 @@ const RequestService = ({ id = "123" }) => {
             name: el.tags?.name || el.tags?.place || "Unnamed",
           };
         });
-        setFeatures(points);
+
         const named = points.find((p) => p.name !== "Unnamed");
         if (named) setLocationInfo(named.name);
       })

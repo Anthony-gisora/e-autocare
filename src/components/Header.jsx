@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser, useClerk } from "@clerk/clerk-react";
+import { useUser, useClerk, UserButton } from "@clerk/clerk-react";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,11 +11,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Left: Profile image */}
         <div className="flex items-center space-x-3">
-          <img
-            src={user.imageUrl}
-            alt="Profile"
-            className="w-10 h-10 rounded-full border-2 border-[#2b2d42] object-cover"
-          />
+          <UserButton />
           <span className="font-bold text-[#2b2d42] hidden sm:inline">
             Hi, {user.firstName}
           </span>

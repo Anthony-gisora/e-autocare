@@ -5,6 +5,7 @@ import Home from "./pages/home/Home";
 import { SignedIn, SignedOut, SignIn } from "@clerk/clerk-react";
 import AppLayout from "./layouts/AppLayout";
 import RequestService from "./pages/RequestService/RequestService";
+import AboutUs from "./pages/AboutUs/AboutUs";
 
 function App() {
   return (
@@ -22,6 +23,14 @@ function App() {
         element={
           <AppLayout>
             <RequestService />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/about"
+        element={
+          <AppLayout>
+            <AboutUs />
           </AppLayout>
         }
       />

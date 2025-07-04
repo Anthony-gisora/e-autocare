@@ -30,7 +30,7 @@ function App() {
         path="/about"
         element={
           <AppLayout>
-            <AboutUs />
+            {/* <AboutUs /> */} <div className="">hi</div>
           </AppLayout>
         }
       />

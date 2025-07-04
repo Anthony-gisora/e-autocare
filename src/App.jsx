@@ -5,7 +5,7 @@ import Home from "./pages/home/Home";
 import { SignedIn, SignedOut, SignIn } from "@clerk/clerk-react";
 import AppLayout from "./layouts/AppLayout";
 import RequestService from "./pages/RequestService/RequestService";
-import AboutUs from "./pages/AboutUs/AboutUs";
+// import AboutUs from "./pages/AboutUs/AboutUs";
 
 function App() {
   return (

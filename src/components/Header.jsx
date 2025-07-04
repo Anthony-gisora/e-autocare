@@ -57,14 +57,7 @@ const Header = () => {
                 About Us
               </button>
             </li>
-            <li>
-              <button
-                onClick={() => navigate("/switch")}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
-              >
-                Switch Account
-              </button>
-            </li>
+
             <li>
               <button
                 onClick={handleSignOut}

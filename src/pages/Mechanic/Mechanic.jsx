@@ -1,5 +1,6 @@
 import { useUser } from "@clerk/clerk-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const counties = [
   "Baringo",
@@ -55,6 +56,15 @@ const MechanicRequest = () => {
   const { user } = useUser();
   const [county, setCounty] = useState("");
 
+  const navigate = useNavigate();
+
+  const handleSubmit = () => {
+    alert(
+      "You'll receive your confirmation notification in your notifications, Keep checking"
+    );
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-[#edf2f4] flex items-center justify-center px-4 py-12">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
@@ -62,7 +72,12 @@ const MechanicRequest = () => {
           Mechanic Registration Request
         </h2>
 
-        <form className="space-y-6">
+        <form
+          className="space-y-6"
+          onSubmit={() => {
+            handleSubmit();
+          }}
+        >
           {/* First & Last Name */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

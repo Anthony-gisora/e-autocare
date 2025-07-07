@@ -78,6 +78,14 @@ const Header = () => {
             </li>
             <li>
               <button
+                onClick={() => navigate(`/mechReq/${user.fullName}`)}
+                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
+              >
+                mechanic Registration
+              </button>
+            </li>
+            <li>
+              <button
                 onClick={handleSignOut}
                 className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
               >
@@ -89,7 +97,7 @@ const Header = () => {
                 onClick={() => setShowNotifications((prev) => !prev)}
                 className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
               >
-                <NotificationsNoneOutlinedIcon />
+                {menuOpen ? "Notifications" : <NotificationsNoneOutlinedIcon />}
               </button>
 
               {showNotifications && (

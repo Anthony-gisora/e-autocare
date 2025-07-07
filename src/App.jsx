@@ -6,6 +6,7 @@ import { SignedIn, SignedOut, SignIn } from "@clerk/clerk-react";
 import AppLayout from "./layouts/AppLayout";
 import RequestService from "./pages/RequestService/RequestService";
 import AboutUs from "./pages/AboutUs/AboutUs";
+import MechanicRequest from "./pages/Mechanic/Mechanic";
 
 function App() {
   return (
@@ -15,6 +16,14 @@ function App() {
         element={
           <AppLayout>
             <Home />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/mechReq/:user"
+        element={
+          <AppLayout>
+            <MechanicRequest />
           </AppLayout>
         }
       />

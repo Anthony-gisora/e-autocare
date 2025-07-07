@@ -44,7 +44,39 @@ const Header = () => {
         </div>
 
         {/* Mobile toggle */}
-        <div className="block sm:hidden cursor-pointer">
+        <div className="flex sm:hidden cursor-pointer">
+          {!menuOpen ? (
+            <div className="">
+              <button
+                onClick={() => setShowNotifications((prev) => !prev)}
+                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
+              >
+                {menuOpen ? "Notifications" : <NotificationsNoneOutlinedIcon />}
+              </button>
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                  <div className="p-3 font-semibold text-[#2b2d42] border-b">
+                    Notifications
+                  </div>
+                  <ul className="max-h-60 overflow-y-auto">
+                    {notifications.map((note, idx) => (
+                      <li
+                        key={idx}
+                        className="px-4 py-2 hover:bg-[#f1f1f1] cursor-pointer"
+                      >
+                        <p className="font-medium text-sm text-[#2b2d42]">
+                          {note.title}
+                        </p>
+                        <p className="text-xs text-[#8d99ae]">{note.text}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          ) : (
+            ""
+          )}
           <button
             className="text-[#2b2d42] font-semibold"
             onClick={() => setMenuOpen(!menuOpen)}

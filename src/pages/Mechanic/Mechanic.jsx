@@ -1,35 +1,91 @@
 import { useUser } from "@clerk/clerk-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { counties } from "../../dammyData/datasets";
+import toast, { Toaster } from "react-hot-toast";
+
+const counties = [
+  "Baringo",
+  "Bomet",
+  "Bungoma",
+  "Busia",
+  "Elgeyo-Marakwet",
+  "Embu",
+  "Garissa",
+  "Homa Bay",
+  "Isiolo",
+  "Kajiado",
+  "Kakamega",
+  "Kericho",
+  "Kiambu",
+  "Kilifi",
+  "Kirinyaga",
+  "Kisii",
+  "Kisumu",
+  "Kitui",
+  "Kwale",
+  "Laikipia",
+  "Lamu",
+  "Machakos",
+  "Makueni",
+  "Mandera",
+  "Marsabit",
+  "Meru",
+  "Migori",
+  "Mombasa",
+  "Murang'a",
+  "Nairobi",
+  "Nakuru",
+  "Nandi",
+  "Narok",
+  "Nyamira",
+  "Nyandarua",
+  "Nyeri",
+  "Samburu",
+  "Siaya",
+  "Taita Taveta",
+  "Tana River",
+  "Tharaka-Nithi",
+  "Trans Nzoia",
+  "Turkana",
+  "Uasin Gishu",
+  "Vihiga",
+  "Wajir",
+  "West Pokot",
+];
 
 const MechanicRequest = () => {
   const { user } = useUser();
+
+  const [email, setEmail] = useState(`${user.firstName}@gmail.com`);
+  const [expertise, setExpertise] = useState("");
+  const [experience, setExperience] = useState("");
+  const [phone, setPhone] = useState("");
+  const [country, setCountry] = useState("Kenya");
   const [county, setCounty] = useState("");
+  const [subCounty, setSubCounty] = useState("");
 
-  const navigate = useNavigate();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    toast.success("Request submitted successfully!");
 
-  const handleSubmit = () => {
-    alert(
-      "You'll receive your confirmation notification in your notifications, Keep checking"
-    );
-    navigate("/");
+    // Clear form
+    setEmail(`${user.firstName}@gmail.com`);
+    setExpertise("");
+    setExperience("");
+    setPhone("");
+    setCountry("Kenya");
+    setCounty("");
+    setSubCounty("");
   };
 
   return (
     <div className="min-h-screen bg-[#edf2f4] flex items-center justify-center px-4 py-12">
+      <Toaster position="top-center" />
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
         <h2 className="text-2xl font-bold text-[#2b2d42] mb-6">
           Mechanic Registration Request
         </h2>
 
-        <form
-          className="space-y-6"
-          onSubmit={() => {
-            handleSubmit();
-          }}
-        >
-          {/* First & Last Name */}
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-[#2b2d42]">
@@ -55,38 +111,40 @@ const MechanicRequest = () => {
             </div>
           </div>
 
-          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-[#2b2d42]">
               Email
             </label>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder={`${user.firstName}@gmail.com`}
               className="w-full mt-1 p-3 border border-gray-300 rounded-md"
             />
           </div>
 
-          {/* Area of Expertise */}
           <div>
             <label className="block text-sm font-medium text-[#2b2d42]">
               What is your area of expertise? *
             </label>
             <textarea
               rows={3}
+              value={expertise}
+              onChange={(e) => setExpertise(e.target.value)}
               required
               className="w-full mt-1 p-3 border border-gray-300 rounded-md resize-none"
               placeholder="e.g. Engine Repair, Diagnostics, Brake Systems..."
             ></textarea>
           </div>
 
-          {/* Experience Level */}
           <div>
             <label className="block text-sm font-medium text-[#2b2d42]">
               What is your level of experience? *
             </label>
             <select
+              value={experience}
+              onChange={(e) => setExperience(e.target.value)}
               required
               className="w-full mt-1 p-3 border border-gray-300 rounded-md"
             >
@@ -97,20 +155,33 @@ const MechanicRequest = () => {
             </select>
           </div>
 
-          {/* Phone Number */}
           <div>
             <label className="block text-sm font-medium text-[#2b2d42]">
               Enter your primary phone number. *
             </label>
             <input
               type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
               placeholder="07XX XXX XXX"
               className="w-full mt-1 p-3 border border-gray-300 rounded-md"
             />
           </div>
 
-          {/* County */}
+          <div>
+            <label className="block text-sm font-medium text-[#2b2d42]">
+              What’s your country of operation? *
+            </label>
+            <input
+              type="text"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              required
+              className="w-full mt-1 p-3 border border-gray-300 rounded-md"
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-[#2b2d42]">
               What’s your county of operation? *
@@ -122,28 +193,28 @@ const MechanicRequest = () => {
               className="w-full mt-1 p-3 border border-gray-300 rounded-md"
             >
               <option value="">-- Select County --</option>
-              {counties.map((name) => (
-                <option key={name} value={name}>
-                  {name}
+              {counties.map((c) => (
+                <option key={c} value={c}>
+                  {c}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Sub-county (now just text input) */}
           <div>
             <label className="block text-sm font-medium text-[#2b2d42]">
               What’s your sub-county? *
             </label>
             <input
               type="text"
+              value={subCounty}
+              onChange={(e) => setSubCounty(e.target.value)}
               required
               className="w-full mt-1 p-3 border border-gray-300 rounded-md"
               placeholder="Enter your sub-county"
             />
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             className="w-full bg-[#2b2d42] text-white font-semibold py-3 rounded-md hover:bg-[#1f2034] transition"

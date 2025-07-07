@@ -48,14 +48,14 @@ const AboutUs = () => {
             {
               name: "Kelvin M.",
               role: "CEO E-AutoCare Support",
-              img: "./CEO.jpg",
+              img: "./maleAvator.jpg",
             },
             {
               name: "Tonny G",
               role: "Lead Dev Engineer",
-              img: "./Developer.jpg",
+              img: "./maleAvator.jpg",
             },
-            { name: "Kelvin R.", role: "Secretary", img: "./femaleAvator.jpg" },
+            { name: "Lavin O.", role: "Secretary", img: "./femaleAvator.jpg" },
             {
               name: "Kelvin R.",
               role: "Financial Controller",

@@ -7,6 +7,7 @@ import AppLayout from "./layouts/AppLayout";
 import RequestService from "./pages/RequestService/RequestService";
 import AboutUs from "./pages/AboutUs/AboutUs";
 import MechanicRequest from "./pages/Mechanic/Mechanic";
+import MechanicHome from "./pages/Mechanic/MechaHome/MechaHome";
 
 function App() {
   return (
@@ -40,6 +41,14 @@ function App() {
         element={
           <AppLayout>
             <AboutUs />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/mechanicHome"
+        element={
+          <AppLayout>
+            <MechanicHome />
           </AppLayout>
         }
       />

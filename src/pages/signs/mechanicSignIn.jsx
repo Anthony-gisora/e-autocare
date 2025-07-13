@@ -28,6 +28,7 @@ const MechanicLogin = () => {
 
         return alert(`Logged in as: ${personalNumber}`);
       }
+      setLoading(false);
     });
 
     // Simulate login

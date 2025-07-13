@@ -108,14 +108,7 @@ const Header = () => {
                 About Us
               </button>
             </li>
-            <li>
-              <button
-                onClick={() => navigate(`/mechanicHome`)}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
-              >
-                mechanic
-              </button>
-            </li>
+
             <li>
               <button
                 onClick={() => navigate(`/MechanicLogin`)}

@@ -3,7 +3,7 @@ const AboutUs = () => {
     <div className="min-h-screen bg-[#f8f9fa] text-[#2b2d42] animate-fadeUp">
       {/* Hero */}
       <section className="bg-[#2b2d42] text-white py-16 px-4 text-center">
-        <h1 className="text-4xl font-bold mb-4">About E-AutoCare</h1>
+        <h1 className="text-4xl font-bold mb-4">About RoadMate</h1>
         <p className="max-w-2xl mx-auto text-lg">
           Your roadside hero — connecting drivers to real-time, verified
           mechanics wherever the journey leads.

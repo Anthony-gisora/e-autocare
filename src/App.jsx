@@ -1,13 +1,13 @@
 import "./App.css";
-import LandingPage from "./components/LandingPage";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/home/Home";
-import { SignedIn, SignedOut, SignIn } from "@clerk/clerk-react";
 import AppLayout from "./layouts/AppLayout";
 import RequestService from "./pages/RequestService/RequestService";
 import AboutUs from "./pages/AboutUs/AboutUs";
 import MechanicRequest from "./pages/Mechanic/Mechanic";
 import MechanicHome from "./pages/Mechanic/MechaHome/MechaHome";
+import MechanicLogin from "./pages/signs/mechanicSignIn";
+import MechanicLayout from "./layouts/MechaLayout";
 
 function App() {
   return (
@@ -44,12 +44,13 @@ function App() {
           </AppLayout>
         }
       />
+      <Route path="/MechanicLogin" element={<MechanicLogin />} />
       <Route
         path="/mechanicHome"
         element={
-          <AppLayout>
+          <MechanicLayout>
             <MechanicHome />
-          </AppLayout>
+          </MechanicLayout>
         }
       />
     </Routes>

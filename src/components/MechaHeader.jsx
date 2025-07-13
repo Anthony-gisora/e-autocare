@@ -5,7 +5,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 
-const Header = () => {
+const MechanicHearder = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const { user } = useUser();
@@ -94,7 +94,7 @@ const Header = () => {
           <ul className="flex flex-col sm:flex-row items-center sm:space-x-6 p-4 sm:p-0">
             <li>
               <button
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/mechanicHome")}
                 className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
               >
                 Home
@@ -102,26 +102,10 @@ const Header = () => {
             </li>
             <li>
               <button
-                onClick={() => navigate("/about")}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
-              >
-                About Us
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => navigate(`/mechanicHome`)}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
-              >
-                mechanic
-              </button>
-            </li>
-            <li>
-              <button
                 onClick={() => navigate(`/MechanicLogin`)}
                 className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
               >
-                mechanic login
+                Switch account
               </button>
             </li>
             <li>
@@ -168,4 +152,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default MechanicHearder;

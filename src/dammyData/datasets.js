@@ -47,3 +47,8 @@ export const counties = [
   "Wajir",
   "West Pokot",
 ];
+
+export const Mechanics = [
+  { mechPersonalNumber: "MEC-25762376", Password: "Tbt@3420" },
+  { mechPersonalNumber: "MEC-87737567", Password: "Abc@3420" },
+];

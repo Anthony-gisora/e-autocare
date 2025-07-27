@@ -84,12 +84,11 @@ const MechanicLogin = () => {
 
         <p className="text-center text-sm text-[#8d99ae] mt-6">
           Don’t have a personal number?{" "}
-          <a
-            href="/mechReq/:user"
-            className="text-[#2b2d42] underline font-medium"
-          >
-            Register as Mechanic
-          </a>
+          <button onClick={() => navigate("/mechReq/:user")}>
+            <a className="text-[#2b2d42] underline font-medium">
+              Register as Mechanic
+            </a>
+          </button>
         </p>
       </div>
     </div>

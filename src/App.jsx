@@ -8,6 +8,7 @@ import MechanicRequest from "./pages/Mechanic/Mechanic";
 import MechanicHome from "./pages/Mechanic/MechaHome/MechaHome";
 import MechanicLogin from "./pages/signs/mechanicSignIn";
 import MechanicLayout from "./layouts/MechaLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 function App() {
   return (
@@ -51,6 +52,14 @@ function App() {
           <MechanicLayout>
             <MechanicHome />
           </MechanicLayout>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <AppLayout>
+            <AdminDashboard />
+          </AppLayout>
         }
       />
     </Routes>

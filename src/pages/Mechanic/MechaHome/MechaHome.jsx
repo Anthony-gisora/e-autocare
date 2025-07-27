@@ -1,11 +1,11 @@
 import { useUser } from "@clerk/clerk-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const MechanicHome = () => {
   const { user } = useUser();
 
   const [jobsCompleted] = useState(24);
-  const [activeRequests] = useState(3);
+  const [activeRequests, setActiveRequest] = useState();
   const [rating] = useState(4.7);
 
   const recentRequests = [
@@ -37,7 +37,17 @@ const MechanicHome = () => {
       date: "2025-07-01",
       customer: "Cynthia Akinyi",
     },
+    {
+      id: 4,
+      model: "Nissan Note",
+      issue: "Break fluid burst...",
+      date: "2025-07-01",
+      customer: "Cynthia Akinyi",
+    },
   ];
+  useEffect(() => {
+    setActiveRequest(recentRequests.length);
+  }, [recentRequests]);
 
   return (
     <div className="min-h-screen bg-[#edf2f4] py-10 px-6">

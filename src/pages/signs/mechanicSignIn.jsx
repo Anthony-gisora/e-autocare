@@ -1,37 +1,44 @@
 import { useState } from "react";
-import { Mechanics } from "../../dammyData/datasets";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const URL_API = "http://https:/roadmateassist.onrender.com/api/auth/login";
 
 const MechanicLogin = () => {
   const [personalNumber, setPersonalNumber] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    Mechanics.map((mechanic) => {
-      if (
-        personalNumber === mechanic.mechPersonalNumber &&
-        password === mechanic.Password
-      ) {
-        setTimeout(() => {
-          setPersonalNumber("");
-          setPassword("");
-          setLoading(false);
-        }, 1500);
+    try {
+      const res = await axios.post(URL_API, {
+        personalNumber,
+        password,
+      });
 
-        navigate("/mechanicHome");
+      const mechanic = res.data;
+      console.log(mechanic);
 
-        return alert(`Logged in as: ${personalNumber}`);
-      }
+      // if (
+      //   personalNumber !== mechanic.personalNumber ||
+      //   password !== mechanic.password
+      // ) {
+      //   return console.log("invalid password or personalNumber");
+      // }
+
       setLoading(false);
-    });
-
-    // Simulate login
+      navigate("/mechanicHome");
+    } catch (err) {
+      console.error("Login error:", err.message);
+      setLoading(false);
+    }
   };
 
   return (
@@ -69,6 +76,8 @@ const MechanicLogin = () => {
             />
           </div>
 
+          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+
           <button
             type="submit"
             disabled={loading}
@@ -85,9 +94,9 @@ const MechanicLogin = () => {
         <p className="text-center text-sm text-[#8d99ae] mt-6">
           Don’t have a personal number?{" "}
           <button onClick={() => navigate("/mechReq/:user")}>
-            <a className="text-[#2b2d42] underline font-medium">
+            <span className="text-[#2b2d42] underline font-medium">
               Register as Mechanic
-            </a>
+            </span>
           </button>
         </p>
       </div>

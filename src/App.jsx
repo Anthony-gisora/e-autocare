@@ -9,6 +9,7 @@ import MechanicHome from "./pages/Mechanic/MechaHome/MechaHome";
 import MechanicLogin from "./pages/signs/mechanicSignIn";
 import MechanicLayout from "./layouts/MechaLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminHeader from "./components/AdminHeader";
 
 function App() {
   return (
@@ -57,9 +58,9 @@ function App() {
       <Route
         path="/admin"
         element={
-          <AppLayout>
+          <AdminHeader>
             <AdminDashboard />
-          </AppLayout>
+          </AdminHeader>
         }
       />
     </Routes>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const URL_API = "http://https:/roadmateassist.onrender.com/api/auth/login";
+const URL_API = "https://roadmateassist.onrender.com/api/auth/login";
 
 const MechanicLogin = () => {
   const [personalNumber, setPersonalNumber] = useState("");

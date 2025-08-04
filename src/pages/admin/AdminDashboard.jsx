@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const API_URL =
-  "http://https:/roadmateassist.onrender.com/api/admin/mechanic-requests";
+  "https://roadmateassist.onrender.com/api/admin/mechanic-requests";
 
 const AdminDashboard = () => {
   const [requests, setRequests] = useState([]);
@@ -15,7 +15,6 @@ const AdminDashboard = () => {
   const [filter, setFilter] = useState("");
   const [modalData, setModalData] = useState(null);
 
-  // Load all mechanic requests
   const loadRequests = async () => {
     try {
       const res = await axios.get(API_URL);
@@ -29,12 +28,10 @@ const AdminDashboard = () => {
     loadRequests();
   }, []);
 
-  // Handle form inputs
   const handleChange = (e) => {
     setForm({ ...form, [e.target.id]: e.target.value });
   };
 
-  // Submit new request
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
@@ -52,7 +49,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Approve or Reject handler
   const updateStatus = async (id, status) => {
     try {
       await axios.patch(`${API_URL}/${id}`, { status });
@@ -62,7 +58,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Filtered results
   const filteredRequests = requests.filter((r) =>
     r.name.toLowerCase().includes(filter.toLowerCase())
   );
@@ -73,7 +68,6 @@ const AdminDashboard = () => {
         🛠️ Mechanic Registration Admin Panel
       </h2>
 
-      {/* Search Bar */}
       <input
         type="text"
         placeholder="Search by name..."
@@ -82,7 +76,6 @@ const AdminDashboard = () => {
         onChange={(e) => setFilter(e.target.value)}
       />
 
-      {/* Form */}
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
@@ -129,7 +122,6 @@ const AdminDashboard = () => {
         </button>
       </form>
 
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full border text-sm table-auto">
           <thead>
@@ -174,7 +166,6 @@ const AdminDashboard = () => {
         </table>
       </div>
 
-      {/* Modal */}
       {modalData && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-96 relative">

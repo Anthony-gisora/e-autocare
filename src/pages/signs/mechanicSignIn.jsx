@@ -26,12 +26,12 @@ const MechanicLogin = () => {
       const mechanic = res.data;
       console.log(mechanic);
 
-      // if (
-      //   personalNumber !== mechanic.personalNumber ||
-      //   password !== mechanic.password
-      // ) {
-      //   return console.log("invalid password or personalNumber");
-      // }
+      if (
+        personalNumber !== mechanic.personalNumber ||
+        password !== mechanic.password
+      ) {
+        return console.log("invalid password or personalNumber");
+      }
 
       setLoading(false);
       navigate("/mechanicHome");
@@ -92,7 +92,7 @@ const MechanicLogin = () => {
         </form>
 
         <p className="text-center text-sm text-[#8d99ae] mt-6">
-          Don’t have a personal number?{" "}
+          Don’t have a personal number?
           <button onClick={() => navigate("/mechReq/:user")}>
             <span className="text-[#2b2d42] underline font-medium">
               Register as Mechanic

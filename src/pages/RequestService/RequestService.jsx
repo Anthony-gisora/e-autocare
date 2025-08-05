@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import {
   MapContainer,
   TileLayer,
@@ -155,6 +156,7 @@ const RequestService = ({ id = "123" }) => {
       setSubmitting(false);
       setModel("");
       setIssue("");
+      axios.post();
     }, 1500);
   };
 

@@ -26,13 +26,6 @@ const MechanicLogin = () => {
       const mechanic = res.data;
       console.log(mechanic);
 
-      if (
-        personalNumber !== mechanic.personalNumber ||
-        password !== mechanic.password
-      ) {
-        return console.log("invalid password or personalNumber");
-      }
-
       setLoading(false);
       navigate("/mechanicHome");
     } catch (err) {

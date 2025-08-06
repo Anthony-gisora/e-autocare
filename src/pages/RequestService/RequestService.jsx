@@ -15,6 +15,8 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder";
 import { useUser } from "@clerk/clerk-react";
 
+const REQ_URI = "https://roadmateassist.onrender.com/api/req/requests";
+
 const SearchControl = () => {
   const map = useMap();
 
@@ -78,19 +80,24 @@ const FitBoundsOnLoad = ({ center, radius }) => {
 
 const RequestService = ({ id = "123" }) => {
   const { user, isLoaded } = useUser();
-
   const [position, setPosition] = useState(null);
-  const [model, setModel] = useState("");
+  const [requestType, setRequestType] = useState("");
   const [issue, setIssue] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [locationInfo, setLocationInfo] = useState("");
   const fetchedRef = useRef(false);
 
+  const reqData = {
+    driverId: user.id,
+    requestType: requestType,
+    details: issue,
+  };
+
   const profileIcon = L.divIcon({
     className: "custom-avatar-icon",
     html: `
       <div class='flex flex-col items-center'>
-        <img src='${user.imageUrl}' class='w-10 h-10 rounded-full border-2 border-white shadow-md object-cover' />
+        <img src='${user?.imageUrl}' class='w-10 h-10 rounded-full border-2 border-white shadow-md object-cover' />
         <div class='w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#2b2d42] mt-[-2px]'></div>
       </div>
     `,
@@ -152,11 +159,11 @@ const RequestService = ({ id = "123" }) => {
     e.preventDefault();
     setSubmitting(true);
     setTimeout(() => {
-      alert(`Service requested for: ${model}\nIssue: ${issue}`);
+      alert(`Service requested for: ${requestType}\nIssue: ${issue}`);
       setSubmitting(false);
-      setModel("");
+      setRequestType("");
       setIssue("");
-      axios.post();
+      axios.post(REQ_URI, reqData);
     }, 1500);
   };
 
@@ -212,16 +219,18 @@ const RequestService = ({ id = "123" }) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-[#2b2d42] font-medium mb-1">
-                Car Model
+                Car requestType
               </label>
-              <input
-                type="text"
-                value={model}
-                onChange={(e) => setModel(e.target.value)}
-                placeholder="e.g. Toyota Premio 2012"
-                className="w-full p-3 border border-[#8d99ae] rounded-md focus:outline-none focus:ring-2 focus:ring-[#2b2d42]"
+              <select
+                value={requestType}
+                onChange={(e) => setRequestType(e.target.value)}
+                className="w-full p-3 border border-[#8d99ae] rounded-md"
                 required
-              />
+              >
+                <option value="tow">Tow</option>
+                <option value="maintenance">Maintenance</option>
+                <option value="emergency">Emergency</option>
+              </select>
             </div>
             <div>
               <label className="block text-[#2b2d42] font-medium mb-1">

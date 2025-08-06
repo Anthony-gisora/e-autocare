@@ -161,9 +161,7 @@ const RequestService = ({ id = "123" }) => {
     setTimeout(() => {
       alert(`Service requested for: ${requestType}\nIssue: ${issue}`);
       setSubmitting(false);
-      setRequestType("");
-      setIssue("");
-      axios.post(REQ_URI, reqData);
+      axios.post(REQ_URI, reqData).then((resp) => console.log(resp));
     }, 1500);
   };
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useUser, useClerk, useAuth, UserButton } from "@clerk/clerk-react";
+import { useUser, useClerk, UserButton } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import io from "socket.io-client";
@@ -7,8 +7,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 
-// Socket connection
-const socket = io("https://roadmateassist.onrender.com"); // change if in production
+const socket = io("https://roadmateassist.onrender.com");
 
 const MechanicHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,26 +15,17 @@ const MechanicHeader = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const { user } = useUser();
   const { signOut } = useClerk();
-  const { getToken } = useAuth();
   const navigate = useNavigate();
 
-  // Logout
   const handleSignOut = async () => {
     await signOut();
     navigate("/sign-in");
   };
 
-  // Fetch mechanic notifications
   const fetchNotifications = async () => {
     try {
-      const token = await getToken();
       const res = await axios.get(
-        "https://roadmateassist.onrender.com/api/req/requests",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        "https://roadmateassist.onrender.com/api/notifications/reqNotification"
       );
       setNotifications(res.data);
     } catch (err) {
@@ -43,12 +33,33 @@ const MechanicHeader = () => {
     }
   };
 
-  // Effect to load and listen for notifications
+  const markInProgress = async (id) => {
+    try {
+      await axios.put(
+        `https://roadmateassist.onrender.com/api/req/updateStatus/${id}`,
+        {
+          status: "In Progress",
+        }
+      );
+
+      // Notify driver in real-time
+      socket.emit("request-updated", {
+        requestId: id,
+        message: "Your request is now being handled by a mechanic.",
+      });
+
+      // Refresh notifications
+      fetchNotifications();
+    } catch (error) {
+      console.error("Error updating request:", error);
+    }
+  };
+
   useEffect(() => {
     fetchNotifications();
 
-    socket.on("newMechanicNotification", (data) => {
-      setNotifications((prev) => [data, ...prev]);
+    socket.on("newMechanicNotification", async () => {
+      await fetchNotifications();
     });
 
     return () => {
@@ -59,7 +70,6 @@ const MechanicHeader = () => {
   return (
     <header className="w-full bg-white shadow-md fixed top-0 left-0 z-[2000]">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between relative">
-        {/* Profile */}
         <div className="flex items-center space-x-3 cursor-pointer">
           <UserButton />
           <span className="font-bold text-[#2b2d42] hidden sm:inline">
@@ -67,7 +77,6 @@ const MechanicHeader = () => {
           </span>
         </div>
 
-        {/* Mobile Menu Button */}
         <div className="flex sm:hidden cursor-pointer">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -77,7 +86,6 @@ const MechanicHeader = () => {
           </button>
         </div>
 
-        {/* Navigation */}
         <nav
           className={`${
             menuOpen ? "block" : "hidden"
@@ -116,7 +124,7 @@ const MechanicHeader = () => {
                 {menuOpen ? "Notifications" : <NotificationsNoneOutlinedIcon />}
               </button>
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">
+                <div className="absolute right-0 mt-2 w-72 bg-white border rounded-lg shadow-lg z-50">
                   <div className="p-3 font-semibold text-[#2b2d42] border-b">
                     Notifications
                   </div>
@@ -134,9 +142,15 @@ const MechanicHeader = () => {
                           <p className="font-medium text-sm text-[#2b2d42]">
                             {note.requestType || "New request"}
                           </p>
-                          <p className="text-xs text-[#8d99ae]">
+                          <p className="text-xs text-[#8d99ae] mb-2">
                             {note.details || "No details provided"}
                           </p>
+                          <button
+                            className="text-xs bg-[#2b2d42] text-white px-3 py-1 rounded"
+                            onClick={() => markInProgress(note._id)}
+                          >
+                            Mark as In Progress
+                          </button>
                         </li>
                       ))
                     )}

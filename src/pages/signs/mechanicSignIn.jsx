@@ -18,10 +18,14 @@ const MechanicLogin = () => {
     setError("");
 
     try {
-      const res = await axios.post(URL_API, {
-        personalNumber,
-        password,
-      });
+      const res = await axios.post(
+        URL_API,
+        {
+          personalNumber,
+          password,
+        },
+        { withCredentials: true }
+      );
 
       const mechanic = res.data;
       console.log(mechanic);

@@ -1,12 +1,12 @@
 import { SignedIn, SignedOut, SignIn } from "@clerk/clerk-react";
-import MechanicHearder from "../components/MechaHeader";
+import MechanicHeader from "../components/MechaHeader";
 
 const MechanicLayout = ({ children }) => {
   return (
     <div className="w-[100%] h-[100%]">
       <SignedIn>
         <div className="">
-          <MechanicHearder />
+          <MechanicHeader />
         </div>
         <div className="h-full w-full">{children}</div>
       </SignedIn>

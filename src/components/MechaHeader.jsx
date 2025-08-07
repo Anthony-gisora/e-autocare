@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser, useClerk, UserButton } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
@@ -8,6 +9,7 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 const MechanicHearder = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const { user } = useUser();
   const { signOut } = useClerk();
   const navigate = useNavigate();
@@ -17,20 +19,19 @@ const MechanicHearder = () => {
     navigate("/sign-in");
   };
 
-  const notifications = [
-    {
-      title: "New Request",
-      text: "You have a new mechanic service request...",
-    },
-    {
-      title: "Location Shared",
-      text: "Your current location was sent to the mechanic...",
-    },
-    {
-      title: "Reminder",
-      text: "Don’t forget to update your car service info...",
-    },
-  ];
+  // Fetch notifications from backend
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get("/");
+        setNotifications(response.data);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
 
   return (
     <header className="w-full bg-white shadow-md fixed top-0 left-0 z-[2000]">
@@ -45,13 +46,13 @@ const MechanicHearder = () => {
 
         {/* Mobile toggle */}
         <div className="flex sm:hidden cursor-pointer">
-          {!menuOpen ? (
-            <div className="">
+          {!menuOpen && (
+            <div>
               <button
                 onClick={() => setShowNotifications((prev) => !prev)}
                 className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
               >
-                {menuOpen ? "Notifications" : <NotificationsNoneOutlinedIcon />}
+                <NotificationsNoneOutlinedIcon />
               </button>
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
@@ -65,17 +66,15 @@ const MechanicHearder = () => {
                         className="px-4 py-2 hover:bg-[#f1f1f1] cursor-pointer"
                       >
                         <p className="font-medium text-sm text-[#2b2d42]">
-                          {note.title}
+                          {note.requestType}
                         </p>
-                        <p className="text-xs text-[#8d99ae]">{note.text}</p>
+                        <p className="text-xs text-[#8d99ae]">{note.details}</p>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
             </div>
-          ) : (
-            ""
           )}
           <button
             className="text-[#2b2d42] font-semibold"
@@ -123,7 +122,6 @@ const MechanicHearder = () => {
               >
                 {menuOpen ? "Notifications" : <NotificationsNoneOutlinedIcon />}
               </button>
-
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                   <div className="p-3 font-semibold text-[#2b2d42] border-b">
@@ -136,9 +134,9 @@ const MechanicHearder = () => {
                         className="px-4 py-2 hover:bg-[#f1f1f1] cursor-pointer"
                       >
                         <p className="font-medium text-sm text-[#2b2d42]">
-                          {note.title}
+                          {note.requestType}
                         </p>
-                        <p className="text-xs text-[#8d99ae]">{note.text}</p>
+                        <p className="text-xs text-[#8d99ae]">{note.details}</p>
                       </li>
                     ))}
                   </ul>

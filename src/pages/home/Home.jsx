@@ -14,7 +14,9 @@ const Home = () => {
 
     try {
       // Fixed the double slash and used correct backend endpoint
-      const res = await axios.get("http://localhost:5000/api/admin/mechanics");
+      const res = await axios.get(
+        "https://roadmateassist.onrender.com/api/admin/mechanics"
+      );
       setMechanics(res.data);
     } catch (err) {
       console.error("Error fetching mechanics:", err);

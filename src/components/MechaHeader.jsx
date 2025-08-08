@@ -38,7 +38,7 @@ const MechanicHeader = () => {
       await axios.put(
         `https://roadmateassist.onrender.com/api/req/updateStatus/${id}`,
         {
-          status: "In Progress",
+          status: "InProgress",
         }
       );
 
@@ -57,6 +57,7 @@ const MechanicHeader = () => {
 
   useEffect(() => {
     fetchNotifications();
+    console.log();
 
     socket.on("newMechanicNotification", async () => {
       await fetchNotifications();

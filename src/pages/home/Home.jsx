@@ -1,22 +1,30 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const mechanics = [
-  { id: 1, name: "Joe's AutoFix", distance: "0.5 km away" },
-  { id: 2, name: "Speedy Garage", distance: "1.2 km away" },
-  { id: 3, name: "MekaniQ Hub", distance: "2.0 km away" },
-];
+import axios from "axios";
 
 const Home = () => {
   const [showMechanics, setShowMechanics] = useState(false);
+  const [mechanics, setMechanics] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleRequestHelp = () => {
+  const handleRequestHelp = async () => {
     setShowMechanics(true);
+    setLoading(true);
+
+    try {
+      // Fixed the double slash and used correct backend endpoint
+      const res = await axios.get("http://localhost:5000/api/admin/mechanics");
+      setMechanics(res.data);
+    } catch (err) {
+      console.error("Error fetching mechanics:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleMechanicClick = (Mechanic) => {
-    navigate(`/request-service/${Mechanic}`);
+  const handleMechanicClick = (mechanicId) => {
+    navigate(`/request-service/${mechanicId}`);
   };
 
   return (
@@ -31,9 +39,10 @@ const Home = () => {
         </p>
         <button
           onClick={handleRequestHelp}
-          className="bg-[#2b2d42] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#1f2034] transition"
+          disabled={loading}
+          className="bg-[#2b2d42] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#1f2034] transition disabled:opacity-50"
         >
-          🔧 Request Help Now
+          {loading ? "Loading mechanics..." : "🔧 Request Help Now"}
         </button>
 
         {showMechanics && (
@@ -41,21 +50,33 @@ const Home = () => {
             <h2 className="text-xl md:text-2xl font-bold text-[#2b2d42]">
               Nearby Mechanics
             </h2>
-            <ul className="space-y-4">
-              {mechanics.map((mech) => (
-                <li
-                  key={mech.id}
-                  onClick={() => handleMechanicClick(mech.name)}
-                  className="flex items-start gap-3 border-b pb-3 cursor-pointer hover:bg-[#f1f1f1] rounded-lg p-2 transition"
-                >
-                  <span className="text-xl md:text-2xl text-[#8d99ae]">📍</span>
-                  <div>
-                    <p className="font-semibold text-[#2b2d42]">{mech.name}</p>
-                    <p className="text-sm text-[#8d99ae]">{mech.distance}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            {loading ? (
+              <p className="text-[#8d99ae]">Fetching mechanics...</p>
+            ) : mechanics.length === 0 ? (
+              <p className="text-[#8d99ae]">No mechanics found.</p>
+            ) : (
+              <ul className="space-y-4">
+                {mechanics.map((mech) => (
+                  <li
+                    key={mech._id}
+                    onClick={() => handleMechanicClick(mech._id)}
+                    className="flex items-start gap-3 border-b pb-3 cursor-pointer hover:bg-[#f1f1f1] rounded-lg p-2 transition"
+                  >
+                    <span className="text-xl md:text-2xl text-[#8d99ae]">
+                      📍
+                    </span>
+                    <div>
+                      <p className="font-semibold text-[#2b2d42]">
+                        {mech.name}
+                      </p>
+                      <p className="text-sm text-[#8d99ae]">
+                        {mech.distance || "Distance unknown"}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
       </div>

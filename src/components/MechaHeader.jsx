@@ -36,7 +36,7 @@ const MechanicHeader = () => {
   const markInProgress = async (id) => {
     try {
       await axios.put(
-        `https://roadmateassist.onrender.com/api/req/updateStatus/${id}`,
+        `https://roadmateassist.onrender.com/api/req/update-status/${id}`,
         {
           status: "InProgress",
         }

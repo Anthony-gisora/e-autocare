@@ -61,7 +61,7 @@ const Home = () => {
                 {mechanics.map((mech) => (
                   <li
                     key={mech._id}
-                    onClick={() => handleMechanicClick(mech._id)}
+                    onClick={() => handleMechanicClick(mech.personalNumber)}
                     className="flex items-start gap-3 border-b pb-3 cursor-pointer hover:bg-[#f1f1f1] rounded-lg p-2 transition"
                   >
                     <span className="text-xl md:text-2xl text-[#8d99ae]">

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import io from "socket.io-client";
 import {
   MapContainer,
   TileLayer,
@@ -9,6 +10,9 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
+
+import { useParams } from "react-router-dom";
+
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
@@ -16,13 +20,14 @@ import "leaflet-control-geocoder";
 import { useUser } from "@clerk/clerk-react";
 
 const REQ_URI = "https://roadmateassist.onrender.com/api/req/requests";
+const SOCKET_URI = "https://roadmateassist.onrender.com";
+
+const socket = io(SOCKET_URI, { transports: ["websocket"] });
 
 const SearchControl = () => {
   const map = useMap();
-
   useEffect(() => {
     if (!map) return;
-
     const geocoder = L.Control.geocoder({
       defaultMarkGeocode: true,
       placeholder: "Search location...",
@@ -37,20 +42,18 @@ const SearchControl = () => {
         map.fitBounds(bounds);
       })
       .addTo(map);
-
     return () => map.removeControl(geocoder);
   }, [map]);
-
   return null;
 };
 
 const FetchOnMove = ({ onFetch }) => {
-  const map = useMapEvents({
-    moveend: () => {
+  useMapEvents({
+    moveend: (map) => {
       const center = map.getCenter();
       onFetch(center.lat, center.lng);
     },
-    zoomend: () => {
+    zoomend: (map) => {
       const center = map.getCenter();
       onFetch(center.lat, center.lng);
     },
@@ -78,21 +81,26 @@ const FitBoundsOnLoad = ({ center, radius }) => {
   return null;
 };
 
-const RequestService = ({ id = "123" }) => {
+const RequestService = () => {
   const { user, isLoaded } = useUser();
   const [position, setPosition] = useState(null);
   const [requestType, setRequestType] = useState("");
   const [issue, setIssue] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [locationInfo, setLocationInfo] = useState("");
+  const [openForm, setOpenRequestForm] = useState(false);
   const fetchedRef = useRef(false);
 
+  const { id } = useParams();
   const reqData = {
-    driverId: user.id,
-    requestType: requestType,
+    driverId: user?.id,
+    requestType,
     details: issue,
+    mechaID: id,
+    position,
   };
 
+  // Profile icon
   const profileIcon = L.divIcon({
     className: "custom-avatar-icon",
     html: `
@@ -106,6 +114,7 @@ const RequestService = ({ id = "123" }) => {
     popupAnchor: [0, -60],
   });
 
+  // Fetch nearby features
   const fetchFeatures = (lat, lon) => {
     const overpassQuery = `
       [out:json];
@@ -133,13 +142,13 @@ const RequestService = ({ id = "123" }) => {
             name: el.tags?.name || el.tags?.place || "Unnamed",
           };
         });
-
         const named = points.find((p) => p.name !== "Unnamed");
         if (named) setLocationInfo(named.name);
       })
       .catch((err) => console.error("Fetch failed:", err));
   };
 
+  // Initial geolocation
   useEffect(() => {
     if (!fetchedRef.current) {
       navigator.geolocation.getCurrentPosition(
@@ -155,14 +164,40 @@ const RequestService = ({ id = "123" }) => {
     }
   }, []);
 
+  // Send live location to backend via socket
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const coords = [pos.coords.latitude, pos.coords.longitude];
+        setPosition(coords);
+
+        socket.emit("driverLocationUpdate", {
+          driverId: user.id,
+          latitude: coords[0],
+          longitude: coords[1],
+        });
+      },
+      (err) => console.error("Location watch error:", err),
+      { enableHighAccuracy: true }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, [user?.id]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
-      alert(`Service requested for: ${requestType}\nIssue: ${issue}`);
-      setSubmitting(false);
-      axios.post(REQ_URI, reqData).then((resp) => console.log(resp));
-    }, 1500);
+    axios
+      .post(REQ_URI, reqData)
+      .then((resp) => {
+        console.log(resp.data);
+        alert(`Service requested for: ${requestType}\nIssue: ${issue}`);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setSubmitting(false));
+    setOpenRequestForm(true);
   };
 
   const circleRadius = 125;
@@ -209,55 +244,57 @@ const RequestService = ({ id = "123" }) => {
       </div>
 
       {/* Bottom Form */}
-      <div className="absolute bottom-0 left-0 w-full z-[1000]">
-        <div className="bg-white/80 backdrop-blur-md max-w-xl mx-auto m-4 p-6 rounded-xl shadow-xl space-y-6 animate-slideUp">
-          <h2 className="text-2xl font-bold text-[#2b2d42]">
-            Request Service from Mechanic #{id}
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-[#2b2d42] font-medium mb-1">
-                Car requestType
-              </label>
-              <select
-                value={requestType}
-                onChange={(e) => setRequestType(e.target.value)}
-                className="w-full p-3 border border-[#8d99ae] rounded-md"
-                required
+      {!openForm && (
+        <div className="absolute bottom-0 left-0 w-full z-[1000]">
+          <div className="bg-white/80 backdrop-blur-md max-w-xl mx-auto m-4 p-6 rounded-xl shadow-xl space-y-6 animate-slideUp">
+            <h2 className="text-2xl font-bold text-[#2b2d42]">
+              Request Service from Mechanic #{id}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-[#2b2d42] font-medium mb-1">
+                  Car requestType
+                </label>
+                <select
+                  value={requestType}
+                  onChange={(e) => setRequestType(e.target.value)}
+                  className="w-full p-3 border border-[#8d99ae] rounded-md"
+                  required
+                >
+                  <option value="">Select type</option>
+                  <option value="tow">Tow</option>
+                  <option value="maintenance">Maintenance</option>
+                  <option value="emergency">Emergency</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[#2b2d42] font-medium mb-1">
+                  Brief Problem Description
+                </label>
+                <textarea
+                  value={issue}
+                  onChange={(e) => setIssue(e.target.value)}
+                  rows={3}
+                  placeholder="Describe what's wrong..."
+                  className="w-full p-3 border border-[#8d99ae] rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-[#2b2d42]"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={submitting}
+                className={`w-full py-3 rounded-md font-semibold text-white transition ${
+                  submitting
+                    ? "bg-[#8d99ae] cursor-not-allowed"
+                    : "bg-[#2b2d42] hover:bg-[#1f2034]"
+                }`}
               >
-                <option value="tow">Tow</option>
-                <option value="maintenance">Maintenance</option>
-                <option value="emergency">Emergency</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-[#2b2d42] font-medium mb-1">
-                Brief Problem Description
-              </label>
-              <textarea
-                value={issue}
-                onChange={(e) => setIssue(e.target.value)}
-                rows={3}
-                placeholder="Describe what's wrong..."
-                className="w-full p-3 border border-[#8d99ae] rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-[#2b2d42]"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={submitting}
-              className={`w-full py-3 rounded-md font-semibold text-white transition ${
-                submitting
-                  ? "bg-[#8d99ae] cursor-not-allowed"
-                  : "bg-[#2b2d42] hover:bg-[#1f2034]"
-              }`}
-            >
-              {submitting ? "Submitting..." : "Submit Request"}
-            </button>
-          </form>
+                {submitting ? "Submitting..." : "Submit Request"}
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-
+      )}
       <style>{`
         .animate-slideUp {
           animation: slideUp 0.5s ease-out;

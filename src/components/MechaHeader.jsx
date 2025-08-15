@@ -22,45 +22,45 @@ const MechanicHeader = () => {
     navigate("/sign-in");
   };
 
-  const fetchNotifications = async () => {
+  const fetchInProgressNotifications = async () => {
     try {
       const res = await axios.get(
         "https://roadmateassist.onrender.com/api/notifications/reqNotification"
       );
-      setNotifications(res.data);
+      // Filter only in-progress requests
+      const inProgressOnly = res.data.filter(
+        (note) => note.status?.toLowerCase() === "inprogress"
+      );
+      setNotifications(inProgressOnly);
     } catch (err) {
       console.error("Failed to fetch notifications:", err);
     }
   };
 
-  const markInProgress = async (id) => {
+  const markComplete = async (id) => {
     try {
       await axios.put(
-        `https://roadmateassist.onrender.com/api/req/update-status/${id}`,
-        {
-          status: "InProgress",
-        }
+        `https://roadmateassist.onrender.com/api/req/update-complete/${id}`,
+        { status: "completed" }
       );
 
-      // Notify driver in real-time
       socket.emit("request-updated", {
         requestId: id,
-        message: "Your request is now being handled by a mechanic.",
+        message: "Your request has been completed by the mechanic.",
       });
 
-      // Refresh notifications
-      fetchNotifications();
+      // Refresh in-progress notifications
+      fetchInProgressNotifications();
     } catch (error) {
-      console.error("Error updating request:", error);
+      console.error("Error completing request:", error);
     }
   };
 
   useEffect(() => {
-    fetchNotifications();
-    console.log();
+    fetchInProgressNotifications();
 
     socket.on("newMechanicNotification", async () => {
-      await fetchNotifications();
+      await fetchInProgressNotifications();
     });
 
     return () => {
@@ -127,12 +127,12 @@ const MechanicHeader = () => {
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-72 bg-white border rounded-lg shadow-lg z-50">
                   <div className="p-3 font-semibold text-[#2b2d42] border-b">
-                    Notifications
+                    In-Progress Requests
                   </div>
                   <ul className="max-h-60 overflow-y-auto">
                     {notifications.length === 0 ? (
                       <li className="px-4 py-2 text-sm text-[#8d99ae]">
-                        No notifications
+                        No in-progress requests
                       </li>
                     ) : (
                       notifications.map((note, index) => (
@@ -141,16 +141,16 @@ const MechanicHeader = () => {
                           className="px-4 py-2 hover:bg-[#f1f1f1] cursor-pointer"
                         >
                           <p className="font-medium text-sm text-[#2b2d42]">
-                            {note.requestType || "New request"}
+                            {note.requestType || "Request"}
                           </p>
                           <p className="text-xs text-[#8d99ae] mb-2">
                             {note.details || "No details provided"}
                           </p>
                           <button
-                            className="text-xs bg-[#2b2d42] text-white px-3 py-1 rounded"
-                            onClick={() => markInProgress(note._id)}
+                            className="text-xs bg-green-600 text-white px-3 py-1 rounded"
+                            onClick={() => markComplete(note._id)}
                           >
-                            Mark as In Progress
+                            Complete
                           </button>
                         </li>
                       ))

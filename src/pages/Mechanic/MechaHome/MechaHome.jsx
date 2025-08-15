@@ -96,14 +96,13 @@ const MechanicHome = () => {
 
     socket.on("connect", () => {
       console.log("✅ Connected to socket server");
-    });
-
-    // Listen for driver location updates
-    socket.on("driverLocationUpdate", (data) => {
-      console.log("📍 Driver location update:", data);
-      if (data?.lat && data?.lng) {
-        setDriverLocation([data.lat, data.lng]);
-      }
+      // Listen for driver location updates
+      socket.on("driverLocationUpdate", (data) => {
+        console.log(data);
+        if (data?.lat && data?.lng) {
+          setDriverLocation([data.lat, data.lng]);
+        }
+      });
     });
 
     socket.on("disconnect", () => {

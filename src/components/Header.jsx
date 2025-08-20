@@ -19,16 +19,8 @@ const Header = () => {
 
   const notifications = [
     {
-      title: "New Request",
-      text: "You have a new mechanic service request...",
-    },
-    {
-      title: "Location Shared",
-      text: "Your current location was sent to the mechanic...",
-    },
-    {
-      title: "Reminder",
-      text: "Don’t forget to update your car service info...",
+      title: "System Updates ",
+      text: "The system will be under update on 25th August 2025, you might be experiencing delays. ",
     },
   ];
 

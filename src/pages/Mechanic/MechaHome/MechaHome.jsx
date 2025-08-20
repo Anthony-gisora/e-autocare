@@ -7,7 +7,7 @@ import {
   Marker,
   Circle,
   Popup,
-  Polyline,
+  useMap,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -15,9 +15,6 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 const SOCKET_URI = "https://roadmateassist.onrender.com";
-
-// Hardcoded mechanic location
-const myInitialLocation = [-4.0435, 39.6682]; // Mombasa
 
 // Hardcoded list of garages
 const garages = [
@@ -43,9 +40,9 @@ const getDistance = (coord1, coord2) => {
 const MechanicHome = () => {
   const [requests, setRequests] = useState([]);
   const [completedJobs, setCompletedJobs] = useState([]);
-  const [myLocation] = useState(myInitialLocation);
+  const [myLocation, setMyLocation] = useState(null);
   const [nearestGarage, setNearestGarage] = useState(null);
-  const [mapCenter, setMapCenter] = useState(myInitialLocation);
+  const [mapCenter, setMapCenter] = useState(null);
   const [driverLocation, setDriverLocation] = useState(null);
 
   const fetchRequests = async () => {
@@ -72,33 +69,43 @@ const MechanicHome = () => {
   };
 
   useEffect(() => {
-    setMapCenter(myLocation);
+    // ✅ Get real current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          const current = [latitude, longitude];
+          setMyLocation(current);
+          setMapCenter(current);
+
+          // Find nearest garage
+          let closest = garages[0];
+          let minDistance = getDistance(current, garages[0].coords);
+
+          garages.forEach((g) => {
+            const dist = getDistance(current, g.coords);
+            if (dist < minDistance) {
+              minDistance = dist;
+              closest = g;
+            }
+          });
+          setNearestGarage(closest);
+        },
+        (err) => {
+          console.error("⚠️ Geolocation error:", err.message);
+        }
+      );
+    }
+
     fetchRequests();
 
-    // Find nearest garage
-    let closest = garages[0];
-    let minDistance = getDistance(myLocation, garages[0].coords);
-
-    garages.forEach((g) => {
-      const dist = getDistance(myLocation, g.coords);
-      if (dist < minDistance) {
-        minDistance = dist;
-        closest = g;
-      }
-    });
-
-    setNearestGarage(closest);
-
-    // Socket connection
-    const socket = io(SOCKET_URI, {
-      transports: ["websocket"],
-    });
+    // ✅ Socket connection
+    const socket = io(SOCKET_URI, { transports: ["websocket"] });
 
     socket.on("connect", () => {
       console.log("✅ Connected to socket server");
-      // Listen for driver location updates
+
       socket.on("driverLocationUpdate", (data) => {
-        console.log(data);
         if (data?.lat && data?.lng) {
           setDriverLocation([data.lat, data.lng]);
         }
@@ -109,10 +116,8 @@ const MechanicHome = () => {
       console.log("❌ Disconnected from socket server");
     });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [myLocation]);
+    return () => socket.disconnect();
+  }, []);
 
   // Routing Control Component
   const RoutingControl = ({ from, to }) => {
@@ -177,41 +182,47 @@ const MechanicHome = () => {
 
       {/* Map */}
       <div className="h-96 rounded-lg overflow-hidden shadow">
-        <MapContainer
-          center={mapCenter}
-          zoom={15}
-          style={{ height: "100%", width: "100%" }}
-        >
-          <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+        {mapCenter && (
+          <MapContainer
+            center={mapCenter}
+            zoom={15}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              attribution="&copy; OpenStreetMap contributors"
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
 
-          {/* My Location */}
-          <Marker position={myLocation} icon={myIcon}>
-            <Popup>You are here</Popup>
-          </Marker>
-          <Circle center={myLocation} radius={50} color="green" />
+            {/* My Location */}
+            {myLocation && (
+              <>
+                <Marker position={myLocation} icon={myIcon}>
+                  <Popup>You are here</Popup>
+                </Marker>
+                <Circle center={myLocation} radius={50} color="green" />
+              </>
+            )}
 
-          {/* Driver Location */}
-          {driverLocation && (
-            <>
-              <Marker position={driverLocation} icon={driverIcon}>
-                <Popup>Driver Location</Popup>
-              </Marker>
-
-              {/* Road-based route */}
-              <RoutingControl from={myLocation} to={driverLocation} />
-            </>
-          )}
-        </MapContainer>
+            {/* Driver Location */}
+            {driverLocation && (
+              <>
+                <Marker position={driverLocation} icon={driverIcon}>
+                  <Popup>Driver Location</Popup>
+                </Marker>
+                <RoutingControl from={myLocation} to={driverLocation} />
+              </>
+            )}
+          </MapContainer>
+        )}
       </div>
 
       {/* Coordinates Display */}
       <div className="bg-white p-4 rounded-lg shadow space-y-2">
-        <p>
-          <strong>My Location:</strong> {myLocation[0]}, {myLocation[1]}
-        </p>
+        {myLocation && (
+          <p>
+            <strong>My Location:</strong> {myLocation[0]}, {myLocation[1]}
+          </p>
+        )}
         {nearestGarage && (
           <p>
             <strong>Nearest Garage:</strong> {nearestGarage.coords[0]},{" "}

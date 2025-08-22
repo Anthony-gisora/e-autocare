@@ -8,7 +8,7 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 const AdminHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const { user } = useUser();
+  const { user, isLoaded } = useUser(); // ✅ add isLoaded
   const { signOut } = useClerk();
   const navigate = useNavigate();
 
@@ -32,6 +32,17 @@ const AdminHeader = () => {
     },
   ];
 
+  // ✅ Prevent rendering until Clerk finishes loading
+  if (!isLoaded) {
+    return (
+      <header className="w-full bg-white shadow-md fixed top-0 left-0 z-[2000]">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between relative">
+          <span className="font-bold text-[#2b2d42]">Loading...</span>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className="w-full bg-white shadow-md fixed top-0 left-0 z-[2000]">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between relative">
@@ -39,14 +50,14 @@ const AdminHeader = () => {
         <div className="flex items-center space-x-3 cursor-pointer">
           <UserButton />
           <span className="font-bold text-[#2b2d42] hidden sm:inline">
-            Hi, {user.firstName}
+            Hi, {user?.firstName || "User"} {/* ✅ safe access */}
           </span>
         </div>
 
         {/* Mobile toggle */}
         <div className="flex sm:hidden cursor-pointer">
           {!menuOpen ? (
-            <div className="">
+            <div>
               <button
                 onClick={() => setShowNotifications((prev) => !prev)}
                 className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
@@ -123,7 +134,6 @@ const AdminHeader = () => {
               >
                 {menuOpen ? "Notifications" : <NotificationsNoneOutlinedIcon />}
               </button>
-
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                   <div className="p-3 font-semibold text-[#2b2d42] border-b">

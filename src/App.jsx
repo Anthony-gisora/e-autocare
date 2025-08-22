@@ -58,9 +58,10 @@ function App() {
       <Route
         path="/admin"
         element={
-          <AdminHeader>
+          <>
+            <AdminHeader />
             <AdminDashboard />
-          </AdminHeader>
+          </>
         }
       />
     </Routes>

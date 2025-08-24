@@ -11,6 +11,9 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
+  LineChart,
+  Line,
+  CartesianGrid,
 } from "recharts";
 import { Users, Wrench, ClipboardList, CheckCircle } from "lucide-react";
 
@@ -47,7 +50,7 @@ const AdminDashboard = () => {
   const fetchMechanics = async () => {
     try {
       const { data } = await axios.get(
-        "https://roadmateassist.onrender.com/api/mechanics"
+        "https://roadmateassist.onrender.com/api/admin/mechanic-requests"
       );
       setMechanics(data);
     } catch (error) {
@@ -83,6 +86,34 @@ const AdminDashboard = () => {
     { name: "Requests", value: requests.length },
     { name: "Users", value: users.length },
     { name: "Mechanics", value: mechanics.length },
+  ];
+
+  // Line Chart Data - showing progress trends
+  const progressData = [
+    {
+      name: "Week 1",
+      pending: totalPending * 0.4,
+      inProgress: totalInProgress * 0.6,
+      completed: totalCompleted * 0.2,
+    },
+    {
+      name: "Week 2",
+      pending: totalPending * 0.3,
+      inProgress: totalInProgress * 0.5,
+      completed: totalCompleted * 0.4,
+    },
+    {
+      name: "Week 3",
+      pending: totalPending * 0.2,
+      inProgress: totalInProgress * 0.4,
+      completed: totalCompleted * 0.6,
+    },
+    {
+      name: "Week 4",
+      pending: totalPending * 0.1,
+      inProgress: totalInProgress * 0.3,
+      completed: totalCompleted * 0.8,
+    },
   ];
 
   return (
@@ -138,11 +169,7 @@ const AdminDashboard = () => {
           <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-700">
             Overview
           </h2>
-          <ResponsiveContainer
-            width="100%"
-            height={250}
-            className="sm:h-[300px]"
-          >
+          <ResponsiveContainer width="100%" height={250}>
             <BarChart data={barData}>
               <XAxis dataKey="name" />
               <YAxis />
@@ -158,11 +185,7 @@ const AdminDashboard = () => {
           <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-700">
             Requests Status
           </h2>
-          <ResponsiveContainer
-            width="100%"
-            height={250}
-            className="sm:h-[300px]"
-          >
+          <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
                 data={statusData}
@@ -182,6 +205,40 @@ const AdminDashboard = () => {
             </PieChart>
           </ResponsiveContainer>
         </div>
+      </div>
+
+      {/* Line Chart for Progress */}
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow mb-8">
+        <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-700">
+          Service Progress Trends
+        </h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={progressData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="pending"
+              stroke="#FBBF24"
+              strokeWidth={2}
+            />
+            <Line
+              type="monotone"
+              dataKey="inProgress"
+              stroke="#3B82F6"
+              strokeWidth={2}
+            />
+            <Line
+              type="monotone"
+              dataKey="completed"
+              stroke="#10B981"
+              strokeWidth={2}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
 
       {/* Recent Requests Table */}

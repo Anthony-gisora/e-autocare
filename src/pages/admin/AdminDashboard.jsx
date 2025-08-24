@@ -86,51 +86,63 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8">
+    <div className="p-4 sm:p-6 lg:p-8 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-6 sm:mb-8">
         📊 Admin Dashboard
       </h1>
 
       {/* Top Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div className="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-          <ClipboardList className="text-blue-500 w-10 h-10" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
+          <ClipboardList className="text-blue-500 w-8 h-8 sm:w-10 sm:h-10" />
           <div>
-            <h3 className="text-lg font-semibold text-gray-600">
+            <h3 className="text-sm sm:text-base font-semibold text-gray-600">
               Total Requests
             </h3>
-            <p className="text-2xl font-bold">{requests.length}</p>
+            <p className="text-xl sm:text-2xl font-bold">{requests.length}</p>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-          <Users className="text-indigo-500 w-10 h-10" />
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
+          <Users className="text-indigo-500 w-8 h-8 sm:w-10 sm:h-10" />
           <div>
-            <h3 className="text-lg font-semibold text-gray-600">Users</h3>
-            <p className="text-2xl font-bold">{users.length}</p>
+            <h3 className="text-sm sm:text-base font-semibold text-gray-600">
+              Users
+            </h3>
+            <p className="text-xl sm:text-2xl font-bold">{users.length}</p>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-          <Wrench className="text-red-500 w-10 h-10" />
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
+          <Wrench className="text-red-500 w-8 h-8 sm:w-10 sm:h-10" />
           <div>
-            <h3 className="text-lg font-semibold text-gray-600">Mechanics</h3>
-            <p className="text-2xl font-bold">{mechanics.length}</p>
+            <h3 className="text-sm sm:text-base font-semibold text-gray-600">
+              Mechanics
+            </h3>
+            <p className="text-xl sm:text-2xl font-bold">{mechanics.length}</p>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow flex items-center gap-4">
-          <CheckCircle className="text-green-500 w-10 h-10" />
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
+          <CheckCircle className="text-green-500 w-8 h-8 sm:w-10 sm:h-10" />
           <div>
-            <h3 className="text-lg font-semibold text-gray-600">Completed</h3>
-            <p className="text-2xl font-bold">{totalCompleted}</p>
+            <h3 className="text-sm sm:text-base font-semibold text-gray-600">
+              Completed
+            </h3>
+            <p className="text-xl sm:text-2xl font-bold">{totalCompleted}</p>
           </div>
         </div>
       </div>
 
       {/* Graphs Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Bar Chart */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-xl font-bold mb-4 text-gray-700">Overview</h2>
-          <ResponsiveContainer width="100%" height={300}>
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow">
+          <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-700">
+            Overview
+          </h2>
+          <ResponsiveContainer
+            width="100%"
+            height={250}
+            className="sm:h-[300px]"
+          >
             <BarChart data={barData}>
               <XAxis dataKey="name" />
               <YAxis />
@@ -142,11 +154,15 @@ const AdminDashboard = () => {
         </div>
 
         {/* Pie Chart */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-xl font-bold mb-4 text-gray-700">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow">
+          <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-700">
             Requests Status
           </h2>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer
+            width="100%"
+            height={250}
+            className="sm:h-[300px]"
+          >
             <PieChart>
               <Pie
                 data={statusData}
@@ -154,7 +170,7 @@ const AdminDashboard = () => {
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={100}
+                outerRadius={90}
                 label
               >
                 {statusData.map((entry, index) => (
@@ -169,13 +185,13 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Requests Table */}
-      <div className="bg-white p-6 rounded-xl shadow">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">
           Recent Requests
         </h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full text-left border rounded-lg overflow-hidden">
-            <thead className="bg-gray-200 text-gray-700">
+          <table className="min-w-full text-left border rounded-lg overflow-hidden text-sm sm:text-base">
+            <thead className="bg-gray-200 text-gray-700 sticky top-0">
               <tr>
                 <th className="py-3 px-4 border">Type</th>
                 <th className="py-3 px-4 border">Details</th>
@@ -190,7 +206,9 @@ const AdminDashboard = () => {
                   className="hover:bg-gray-100 transition duration-200"
                 >
                   <td className="py-3 px-4 border">{req.requestType}</td>
-                  <td className="py-3 px-4 border">{req.details}</td>
+                  <td className="py-3 px-4 border truncate max-w-[200px] sm:max-w-[300px]">
+                    {req.details}
+                  </td>
                   <td
                     className={`py-3 px-4 border font-semibold ${
                       req.status === "pending"
@@ -202,7 +220,7 @@ const AdminDashboard = () => {
                   >
                     {req.status}
                   </td>
-                  <td className="py-3 px-4 border">
+                  <td className="py-3 px-4 border whitespace-nowrap">
                     {new Date(req.createdAt).toLocaleString()}
                   </td>
                 </tr>

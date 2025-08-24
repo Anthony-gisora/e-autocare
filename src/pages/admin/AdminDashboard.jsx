@@ -15,12 +15,13 @@ import {
   Line,
   CartesianGrid,
 } from "recharts";
-import { Users, Wrench, ClipboardList, CheckCircle } from "lucide-react";
+import { Users, Wrench, ClipboardList, CheckCircle, Clock } from "lucide-react";
 
 const AdminDashboard = () => {
   const [requests, setRequests] = useState([]);
   const [users, setUsers] = useState([]);
   const [mechanics, setMechanics] = useState([]);
+  const [progressData, setProgressData] = useState([]);
 
   // Fetch Requests
   const fetchRequests = async () => {
@@ -64,16 +65,18 @@ const AdminDashboard = () => {
     fetchMechanics();
   }, []);
 
-  // Stats
+  // Stats from API
   const totalCompleted = requests.filter(
-    (r) => r.status === "completed"
+    (r) => r.status?.toLowerCase() === "completed"
   ).length;
   const totalInProgress = requests.filter(
-    (r) => r.status === "inProgress"
+    (r) => r.status?.toLowerCase() === "inprogress"
   ).length;
-  const totalPending = requests.filter((r) => r.status === "pending").length;
+  const totalPending = requests.filter(
+    (r) => r.status?.toLowerCase() === "pending"
+  ).length;
 
-  // Data for charts
+  // Pie Chart Data
   const statusData = [
     { name: "Pending", value: totalPending },
     { name: "In Progress", value: totalInProgress },
@@ -82,39 +85,47 @@ const AdminDashboard = () => {
 
   const COLORS = ["#FBBF24", "#3B82F6", "#10B981"];
 
+  // Bar Chart Data
   const barData = [
     { name: "Requests", value: requests.length },
     { name: "Users", value: users.length },
     { name: "Mechanics", value: mechanics.length },
   ];
 
-  // Line Chart Data - showing progress trends
-  const progressData = [
-    {
-      name: "Week 1",
-      pending: totalPending * 0.4,
-      inProgress: totalInProgress * 0.6,
-      completed: totalCompleted * 0.2,
-    },
-    {
-      name: "Week 2",
-      pending: totalPending * 0.3,
-      inProgress: totalInProgress * 0.5,
-      completed: totalCompleted * 0.4,
-    },
-    {
-      name: "Week 3",
-      pending: totalPending * 0.2,
-      inProgress: totalInProgress * 0.4,
-      completed: totalCompleted * 0.6,
-    },
-    {
-      name: "Week 4",
-      pending: totalPending * 0.1,
-      inProgress: totalInProgress * 0.3,
-      completed: totalCompleted * 0.8,
-    },
-  ];
+  // 🔹 Generate weekly progress data dynamically
+  useEffect(() => {
+    if (requests.length > 0) {
+      const grouped = {};
+
+      requests.forEach((req) => {
+        const date = new Date(req.createdAt);
+        const week = `Week ${Math.ceil(date.getDate() / 7)}`;
+
+        if (!grouped[week]) {
+          grouped[week] = {
+            name: week,
+            pending: 0,
+            inProgress: 0,
+            completed: 0,
+          };
+        }
+
+        const status = req.status?.toLowerCase();
+        if (status === "pending") grouped[week].pending += 1;
+        if (status === "inprogress") grouped[week].inProgress += 1;
+        if (status === "completed") grouped[week].completed += 1;
+      });
+
+      // Sort weeks numerically
+      const formatted = Object.values(grouped).sort((a, b) => {
+        const aNum = parseInt(a.name.replace("Week ", ""), 10);
+        const bNum = parseInt(b.name.replace("Week ", ""), 10);
+        return aNum - bNum;
+      });
+
+      setProgressData(formatted);
+    }
+  }, [requests]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 bg-gray-100 min-h-screen">
@@ -122,8 +133,8 @@ const AdminDashboard = () => {
         📊 Admin Dashboard
       </h1>
 
-      {/* Top Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+      {/* 🔹 Top Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-6 mb-8">
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
           <ClipboardList className="text-blue-500 w-8 h-8 sm:w-10 sm:h-10" />
           <div>
@@ -133,6 +144,7 @@ const AdminDashboard = () => {
             <p className="text-xl sm:text-2xl font-bold">{requests.length}</p>
           </div>
         </div>
+
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
           <Users className="text-indigo-500 w-8 h-8 sm:w-10 sm:h-10" />
           <div>
@@ -142,6 +154,7 @@ const AdminDashboard = () => {
             <p className="text-xl sm:text-2xl font-bold">{users.length}</p>
           </div>
         </div>
+
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
           <Wrench className="text-red-500 w-8 h-8 sm:w-10 sm:h-10" />
           <div>
@@ -151,6 +164,27 @@ const AdminDashboard = () => {
             <p className="text-xl sm:text-2xl font-bold">{mechanics.length}</p>
           </div>
         </div>
+
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
+          <Clock className="text-yellow-500 w-8 h-8 sm:w-10 sm:h-10" />
+          <div>
+            <h3 className="text-sm sm:text-base font-semibold text-gray-600">
+              Pending
+            </h3>
+            <p className="text-xl sm:text-2xl font-bold">{totalPending}</p>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
+          <Clock className="text-blue-500 w-8 h-8 sm:w-10 sm:h-10" />
+          <div>
+            <h3 className="text-sm sm:text-base font-semibold text-gray-600">
+              In Progress
+            </h3>
+            <p className="text-xl sm:text-2xl font-bold">{totalInProgress}</p>
+          </div>
+        </div>
+
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
           <CheckCircle className="text-green-500 w-8 h-8 sm:w-10 sm:h-10" />
           <div>
@@ -224,18 +258,21 @@ const AdminDashboard = () => {
               dataKey="pending"
               stroke="#FBBF24"
               strokeWidth={2}
+              name="Pending"
             />
             <Line
               type="monotone"
               dataKey="inProgress"
               stroke="#3B82F6"
               strokeWidth={2}
+              name="In Progress"
             />
             <Line
               type="monotone"
               dataKey="completed"
               stroke="#10B981"
               strokeWidth={2}
+              name="Completed"
             />
           </LineChart>
         </ResponsiveContainer>
@@ -268,9 +305,9 @@ const AdminDashboard = () => {
                   </td>
                   <td
                     className={`py-3 px-4 border font-semibold ${
-                      req.status === "pending"
+                      req.status?.toLowerCase() === "pending"
                         ? "text-yellow-600"
-                        : req.status === "completed"
+                        : req.status?.toLowerCase() === "completed"
                         ? "text-green-600"
                         : "text-blue-600"
                     }`}

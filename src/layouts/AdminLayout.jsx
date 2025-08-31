@@ -1,6 +1,7 @@
 import { SignedIn, SignedOut, SignIn } from "@clerk/clerk-react";
 import AdminHeader from "../components/AdminHeader";
 
+// mechanic
 const MechanicLayout = ({ children }) => {
   return (
     <div className="w-[100%] h-[100%]">

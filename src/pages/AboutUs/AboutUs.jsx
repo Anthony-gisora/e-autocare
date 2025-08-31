@@ -1,7 +1,7 @@
 const AboutUs = () => {
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-[#2b2d42] animate-fadeUp">
-      {/* Hero */}
+      {/* Hero the top one*/}
       <section className="bg-[#2b2d42] text-white py-16 px-4 text-center">
         <h1 className="text-4xl font-bold mb-4">About RoadMate</h1>
         <p className="max-w-2xl mx-auto text-lg">
@@ -10,10 +10,11 @@ const AboutUs = () => {
         </p>
       </section>
 
-      {/* Core Services */}
+      {/* Core Services for E-outocare */}
       <section className="py-12 px-4 max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-center mb-8">What We Offer</h2>
         <div className="grid gap-6 md:grid-cols-3">
+          {/* will hard code then later will come up with a strategy */}
           {[
             {
               title: "On-Demand Mechanics",
@@ -111,7 +112,7 @@ const AboutUs = () => {
         </a>
       </section>
 
-      {/* Animation styles */}
+      {/* Animation styles to make it smoothly appear on page load*/}
       <style>{`
         .animate-fadeUp {
           animation: fadeUp 0.6s ease-out;

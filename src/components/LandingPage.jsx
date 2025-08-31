@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+// for testing will delete after ...
 const mechanics = [
   { id: 1, name: "Joe's AutoFix", distance: "0.5 km away" },
   { id: 2, name: "Speedy Garage", distance: "1.2 km away" },

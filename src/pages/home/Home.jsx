@@ -13,7 +13,7 @@ const Home = () => {
     setLoading(true);
 
     try {
-      // Fixed the double slash and used correct backend endpoint
+      // Fixed the url from localhost and used correct backend endpoint
       const res = await axios.get(
         "https://roadmateassist.onrender.com/api/admin/mechanics"
       );

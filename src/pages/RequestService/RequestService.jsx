@@ -164,7 +164,7 @@ const RequestService = () => {
     }
   }, []);
 
-  // Send live location to backend via socket
+  // Send live location to backend via socket 'has a bug will look at it'
   useEffect(() => {
     if (!user?.id) return;
 

@@ -23,7 +23,7 @@ const garages = [
   { id: 3, name: "Garage C", coords: [-4.0485, 39.665] },
 ];
 
-// Haversine formula to calculate distance (in km)
+// Haversine formula to calculate distance (in km) obtained from official leaflet docs
 const getDistance = (coord1, coord2) => {
   const R = 6371;
   const dLat = (coord2[0] - coord1[0]) * (Math.PI / 180);
@@ -69,7 +69,7 @@ const MechanicHome = () => {
   };
 
   useEffect(() => {
-    // ✅ Get real current location
+    // Get real current location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -99,7 +99,7 @@ const MechanicHome = () => {
 
     fetchRequests();
 
-    // ✅ Socket connection
+    //  Socket connection
     const socket = io(SOCKET_URI, { transports: ["websocket"] });
 
     socket.on("connect", () => {
@@ -119,7 +119,7 @@ const MechanicHome = () => {
     return () => socket.disconnect();
   }, []);
 
-  // Routing Control Component
+  // Routing Control  Component from official docs
   const RoutingControl = ({ from, to }) => {
     const map = useMap();
 

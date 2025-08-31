@@ -1,3 +1,5 @@
+// will delete nikimalizana or in production mode
+
 export const counties = [
   "Baringo",
   "Bomet",

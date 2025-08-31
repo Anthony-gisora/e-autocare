@@ -32,7 +32,7 @@ const AdminHeader = () => {
     },
   ];
 
-  // ✅ Prevent rendering until Clerk finishes loading
+  // kuprevent rendering until Clerk finishes loading
   if (!isLoaded) {
     return (
       <header className="w-full bg-white shadow-md fixed top-0 left-0 z-[2000]">
@@ -50,7 +50,7 @@ const AdminHeader = () => {
         <div className="flex items-center space-x-3 cursor-pointer">
           <UserButton />
           <span className="font-bold text-[#2b2d42] hidden sm:inline">
-            Hi, {user?.firstName || "User"} {/* ✅ safe access */}
+            Hi, {user?.firstName || "User"}
           </span>
         </div>
 

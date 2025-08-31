@@ -65,7 +65,7 @@ const AdminDashboard = () => {
     fetchMechanics();
   }, []);
 
-  // Stats from API
+  // top cards data from API
   const totalCompleted = requests.filter(
     (r) => r.status?.toLowerCase() === "completed"
   ).length;
@@ -92,7 +92,7 @@ const AdminDashboard = () => {
     { name: "Mechanics", value: mechanics.length },
   ];
 
-  // 🔹 Generate weekly progress data dynamically
+  //  Generate weekly progress data dynamically with actual data
   useEffect(() => {
     if (requests.length > 0) {
       const grouped = {};
@@ -241,7 +241,7 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Line Chart for Progress */}
+      {/* Line Chart for Progress should be dynamic with actual data update */}
       <div className="bg-white p-4 sm:p-6 rounded-xl shadow mb-8">
         <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-700">
           Service Progress Trends

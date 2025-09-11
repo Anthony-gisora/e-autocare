@@ -13,23 +13,27 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#edf2f4] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-2xl text-center space-y-8">
-        <h1 className="text-3xl md:text-5xl font-extrabold text-[#2b2d42] leading-tight">
+        {/* Hero Text */}
+        <h1 className="text-3xl md:text-5xl font-extrabold text-[#075538] leading-tight">
           Your Car, Our Care – Anytime, Anywhere
         </h1>
-        <p className="text-base md:text-lg text-[#2b2d42] font-medium leading-relaxed px-2 md:px-10">
+        <p className="text-base md:text-lg text-[#075538] font-medium leading-relaxed px-2 md:px-10">
           Stranded with a breakdown? Find a nearby, trusted mechanic and get
           help fast.
         </p>
+
+        {/* CTA Button */}
         <button
           onClick={() => setShowMechanics(true)}
-          className="bg-[#2b2d42] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#1f2034] transition"
+          className="bg-[#075538] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#05432d] transition"
         >
           🔧 Request Help Now
         </button>
 
+        {/* Mechanics List */}
         {showMechanics && (
-          <div className="bg-white rounded-xl shadow-lg p-5 mt-6 text-left space-y-4 mx-auto w-full max-w-md">
-            <h2 className="text-xl md:text-2xl font-bold text-[#2b2d42]">
+          <div className="bg-white rounded-xl shadow-lg p-5 mt-6 text-left space-y-4 mx-auto w-full max-w-md border-t-4 border-[#CED46A]">
+            <h2 className="text-xl md:text-2xl font-bold text-[#075538]">
               Nearby Mechanics
             </h2>
             <ul className="space-y-4">
@@ -38,10 +42,10 @@ export default function LandingPage() {
                   key={mech.id}
                   className="flex items-start gap-3 border-b pb-3"
                 >
-                  <span className="text-xl md:text-2xl text-[#8d99ae]">📍</span>
+                  <span className="text-xl md:text-2xl text-[#CED46A]">📍</span>
                   <div>
-                    <p className="font-semibold text-[#2b2d42]">{mech.name}</p>
-                    <p className="text-sm text-[#8d99ae]">{mech.distance}</p>
+                    <p className="font-semibold text-[#075538]">{mech.name}</p>
+                    <p className="text-sm text-gray-600">{mech.distance}</p>
                   </div>
                 </li>
               ))}

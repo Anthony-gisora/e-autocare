@@ -35,14 +35,14 @@ const MechanicLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#edf2f4] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#CED46A] px-4">
       <div className="bg-white w-full max-w-md p-8 rounded-xl shadow-xl">
-        <h2 className="text-3xl font-bold text-[#2b2d42] text-center mb-6">
+        <h2 className="text-3xl font-bold text-[#075538] text-center mb-6">
           Mechanic Login
         </h2>
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-[#2b2d42] font-medium mb-1">
+            <label className="block text-[#075538] font-medium mb-1">
               Personal Number
             </label>
             <input
@@ -50,13 +50,13 @@ const MechanicLogin = () => {
               value={personalNumber}
               required
               onChange={(e) => setPersonalNumber(e.target.value)}
-              className="w-full px-4 py-3 border border-[#ccc] rounded-md focus:outline-none focus:ring-2 focus:ring-[#2b2d42]"
+              className="w-full px-4 py-3 border border-[#CED46A] rounded-md focus:outline-none focus:ring-2 focus:ring-[#075538]"
               placeholder="e.g. MECH-00123"
             />
           </div>
 
           <div>
-            <label className="block text-[#2b2d42] font-medium mb-1">
+            <label className="block text-[#075538] font-medium mb-1">
               Password
             </label>
             <input
@@ -64,7 +64,7 @@ const MechanicLogin = () => {
               value={password}
               required
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-[#ccc] rounded-md focus:outline-none focus:ring-2 focus:ring-[#2b2d42]"
+              className="w-full px-4 py-3 border border-[#CED46A] rounded-md focus:outline-none focus:ring-2 focus:ring-[#075538]"
               placeholder="Enter your password"
             />
           </div>
@@ -76,18 +76,18 @@ const MechanicLogin = () => {
             disabled={loading}
             className={`w-full py-3 rounded-md text-white font-semibold transition ${
               loading
-                ? "bg-[#8d99ae] cursor-not-allowed"
-                : "bg-[#2b2d42] hover:bg-[#1f2034]"
+                ? "bg-[#CED46A] text-[#075538] cursor-not-allowed"
+                : "bg-[#075538] hover:bg-[#06422C]"
             }`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
-        <p className="text-center text-sm text-[#8d99ae] mt-6">
-          Don’t have a personal number?
+        <p className="text-center text-sm text-[#075538] mt-6">
+          Don’t have a personal number?{" "}
           <button onClick={() => navigate("/mechReq/:user")}>
-            <span className="text-[#2b2d42] underline font-medium">
+            <span className="text-[#075538] underline font-medium">
               Register as Mechanic
             </span>
           </button>

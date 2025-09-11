@@ -23,7 +23,7 @@ const garages = [
   { id: 3, name: "Garage C", coords: [-4.0485, 39.665] },
 ];
 
-// Haversine formula to calculate distance (in km) obtained from official leaflet docs
+// Haversine formula
 const getDistance = (coord1, coord2) => {
   const R = 6371;
   const dLat = (coord2[0] - coord1[0]) * (Math.PI / 180);
@@ -69,7 +69,6 @@ const MechanicHome = () => {
   };
 
   useEffect(() => {
-    // Get real current location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -78,7 +77,6 @@ const MechanicHome = () => {
           setMyLocation(current);
           setMapCenter(current);
 
-          // Find nearest garage
           let closest = garages[0];
           let minDistance = getDistance(current, garages[0].coords);
 
@@ -99,7 +97,6 @@ const MechanicHome = () => {
 
     fetchRequests();
 
-    //  Socket connection
     const socket = io(SOCKET_URI, { transports: ["websocket"] });
 
     socket.on("connect", () => {
@@ -119,7 +116,6 @@ const MechanicHome = () => {
     return () => socket.disconnect();
   }, []);
 
-  // Routing Control  Component from official docs
   const RoutingControl = ({ from, to }) => {
     const map = useMap();
 
@@ -133,7 +129,7 @@ const MechanicHome = () => {
         addWaypoints: false,
         draggableWaypoints: false,
         lineOptions: {
-          styles: [{ color: "red", weight: 5 }],
+          styles: [{ color: "#075538", weight: 5 }],
         },
       }).addTo(map);
 
@@ -143,7 +139,6 @@ const MechanicHome = () => {
     return null;
   };
 
-  // Map Icons
   const myIcon = new L.Icon({
     iconUrl: "https://cdn-icons-png.flaticon.com/512/64/64113.png",
     iconSize: [30, 30],
@@ -163,25 +158,25 @@ const MechanicHome = () => {
   });
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-2 space-y-6 bg-[#075538] min-h-screen">
       {/* Top Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-green-500 text-white p-4 rounded-lg shadow">
+        <div className="bg-[#CED46A] text-[#075538] p-4 rounded-lg shadow">
           <h3 className="text-lg font-bold">Completed Jobs</h3>
           <p className="text-2xl">{completedJobs.length}</p>
         </div>
-        <div className="bg-yellow-500 text-white p-4 rounded-lg shadow">
+        <div className="bg-[#075538] text-[#CED46A] border border-[#CED46A] p-4 rounded-lg shadow">
           <h3 className="text-lg font-bold">Active Requests</h3>
           <p className="text-2xl">{requests.length}</p>
         </div>
-        <div className="bg-blue-500 text-white p-4 rounded-lg shadow">
+        <div className="bg-[#CED46A] text-[#075538] p-4 rounded-lg shadow">
           <h3 className="text-lg font-bold">Ratings</h3>
           <p className="text-2xl">4.8 ★</p>
         </div>
       </div>
 
       {/* Map */}
-      <div className="h-96 rounded-lg overflow-hidden shadow">
+      <div className="h-96 rounded-lg overflow-hidden shadow border-4 border-[#CED46A]">
         {mapCenter && (
           <MapContainer
             center={mapCenter}
@@ -193,17 +188,15 @@ const MechanicHome = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {/* My Location */}
             {myLocation && (
               <>
                 <Marker position={myLocation} icon={myIcon}>
                   <Popup>You are here</Popup>
                 </Marker>
-                <Circle center={myLocation} radius={50} color="green" />
+                <Circle center={myLocation} radius={50} color="#075538" />
               </>
             )}
 
-            {/* Driver Location */}
             {driverLocation && (
               <>
                 <Marker position={driverLocation} icon={driverIcon}>
@@ -217,7 +210,7 @@ const MechanicHome = () => {
       </div>
 
       {/* Coordinates Display */}
-      <div className="bg-white p-4 rounded-lg shadow space-y-2">
+      <div className="bg-[#CED46A] p-4 rounded-lg shadow text-[#075538] space-y-2">
         {myLocation && (
           <p>
             <strong>My Location:</strong> {myLocation[0]}, {myLocation[1]}
@@ -239,23 +232,25 @@ const MechanicHome = () => {
 
       {/* Requests */}
       <div>
-        <h2 className="text-xl font-bold mb-2">Recent Requests (Pending)</h2>
+        <h2 className="text-xl font-bold mb-2 text-[#CED46A]">
+          Recent Requests (Pending)
+        </h2>
         <div className="space-y-2">
           {requests.map((req) => (
             <div
               key={req._id}
-              className="bg-white p-4 rounded-lg shadow flex justify-between items-center"
+              className="bg-[#CED46A] p-4 rounded-lg shadow flex justify-between items-center text-[#075538]"
             >
               <div>
                 <p className="font-semibold">{req.requestType}</p>
-                <p className="text-sm text-gray-600">{req.details}</p>
-                <p className="text-xs text-gray-400">
+                <p className="text-sm opacity-80">{req.details}</p>
+                <p className="text-xs opacity-60">
                   {new Date(req.createdAt).toLocaleString()}
                 </p>
               </div>
               <button
                 onClick={() => updateStatus(req._id)}
-                className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
+                className="bg-[#075538] hover:bg-green-900 text-[#CED46A] px-3 py-1 rounded"
               >
                 Mark InProgress
               </button>
@@ -266,13 +261,18 @@ const MechanicHome = () => {
 
       {/* Completed Jobs */}
       <div>
-        <h2 className="text-xl font-bold mb-2">Completed Jobs</h2>
+        <h2 className="text-xl font-bold mb-2 text-[#CED46A]">
+          Completed Jobs
+        </h2>
         <div className="space-y-2">
           {completedJobs.map((job) => (
-            <div key={job._id} className="bg-gray-100 p-4 rounded-lg shadow">
+            <div
+              key={job._id}
+              className="bg-[#CED46A] p-4 rounded-lg shadow text-[#075538]"
+            >
               <p className="font-semibold">{job.requestType}</p>
-              <p className="text-sm text-gray-600">{job.details}</p>
-              <p className="text-xs text-gray-400">
+              <p className="text-sm opacity-80">{job.details}</p>
+              <p className="text-xs opacity-60">
                 {new Date(job.updatedAt).toLocaleString()}
               </p>
             </div>

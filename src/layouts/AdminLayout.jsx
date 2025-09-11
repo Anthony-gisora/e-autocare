@@ -1,18 +1,23 @@
 import { SignedIn, SignedOut, SignIn } from "@clerk/clerk-react";
-import AdminHeader from "../components/AdminHeader";
+import MechanicHeader from "../components/MechanicHeader";
 
-// mechanic
 const MechanicLayout = ({ children }) => {
   return (
-    <div className="w-[100%] h-[100%]">
+    <div className="w-full h-full bg-[#edf2f4]">
       <SignedIn>
-        <div className="">
-          <AdminHeader />
+        {/* Header */}
+        <div className="shadow-md">
+          <MechanicHeader />
         </div>
-        <div className="h-full w-full">{children}</div>
+
+        {/* Page Content */}
+        <div className="h-full w-full pt-20 px-4">{children}</div>
       </SignedIn>
+
       <SignedOut>
-        <SignIn />
+        <div className="flex items-center justify-center h-screen">
+          <SignIn />
+        </div>
       </SignedOut>
     </div>
   );

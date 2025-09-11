@@ -28,7 +28,6 @@ const Header = () => {
         );
         const data = await res.json();
 
-        // Filter by driverId === current user.id
         const userNotifications = data.filter(
           (note) => note.driverId === user.id
         );
@@ -43,13 +42,13 @@ const Header = () => {
   }, [user?.id]);
 
   return (
-    <header className="w-full bg-white shadow-md fixed top-0 left-0 z-[2000]">
+    <header className="w-full bg-[#075538] shadow-md fixed top-0 left-0 z-[2000]">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between relative">
         {/* Left: Profile */}
         <div className="flex items-center space-x-3 cursor-pointer">
           <UserButton />
-          <span className="font-bold text-[#2b2d42] hidden sm:inline">
-            Hi, {user.firstName}
+          <span className="font-bold text-white hidden sm:inline">
+            Hi, {user?.firstName}
           </span>
         </div>
 
@@ -59,13 +58,13 @@ const Header = () => {
             <div>
               <button
                 onClick={() => setShowNotifications((prev) => !prev)}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
+                className="block py-2 px-4 text-white hover:text-[#CED46A] cursor-pointer"
               >
                 {menuOpen ? "Notifications" : <NotificationsNoneOutlinedIcon />}
               </button>
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                  <div className="p-3 font-semibold text-[#2b2d42] border-b">
+                  <div className="p-3 font-semibold text-[#075538] border-b bg-[#CED46A]">
                     Notifications
                   </div>
                   <ul className="max-h-60 overflow-y-auto">
@@ -73,21 +72,21 @@ const Header = () => {
                       notifications.map((note, idx) => (
                         <li
                           key={idx}
-                          className="px-4 py-2 hover:bg-[#f1f1f1] cursor-pointer"
+                          className="px-4 py-2 hover:bg-[#CED46A]/40 cursor-pointer"
                         >
-                          <p className="font-medium text-sm text-[#2b2d42]">
+                          <p className="font-medium text-sm text-[#075538]">
                             {note.requestType}
                           </p>
-                          <p className="text-xs text-[#8d99ae]">
+                          <p className="text-xs text-gray-600">
                             {note.details}
                           </p>
                           <p
                             className={`text-xs mt-1 font-semibold ${
                               note.status === "pending"
-                                ? "text-yellow-500"
+                                ? "text-yellow-600"
                                 : note.status === "approved"
-                                ? "text-green-600"
-                                : "text-red-500"
+                                ? "text-green-700"
+                                : "text-red-600"
                             }`}
                           >
                             {note.status}
@@ -95,7 +94,7 @@ const Header = () => {
                         </li>
                       ))
                     ) : (
-                      <li className="px-4 py-2 text-sm text-[#8d99ae]">
+                      <li className="px-4 py-2 text-sm text-gray-500">
                         No notifications yet
                       </li>
                     )}
@@ -105,7 +104,7 @@ const Header = () => {
             </div>
           ) : null}
           <button
-            className="text-[#2b2d42] font-semibold"
+            className="text-white font-semibold"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <CloseOutlinedIcon /> : <MenuOutlinedIcon />}
@@ -116,13 +115,13 @@ const Header = () => {
         <nav
           className={`${
             menuOpen ? "block" : "hidden"
-          } absolute top-full left-0 w-full sm:static sm:block sm:w-auto bg-white sm:bg-transparent sm:shadow-none shadow-md`}
+          } absolute top-full left-0 w-full sm:static sm:block sm:w-auto bg-[#075538f7] sm:bg-transparent sm:shadow-none shadow-md`}
         >
           <ul className="flex flex-col sm:flex-row items-center sm:space-x-6 p-4 sm:p-0">
             <li>
               <button
                 onClick={() => navigate("/")}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
+                className="block py-2 px-4 text-[#CED46A] hover:text-[#CED46A] cursor-pointer"
               >
                 Home
               </button>
@@ -130,7 +129,7 @@ const Header = () => {
             <li>
               <button
                 onClick={() => navigate("/about")}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
+                className="block py-2 px-4 text-[#CED46A] hover:text-[#CED46A] cursor-pointer"
               >
                 About Us
               </button>
@@ -138,15 +137,15 @@ const Header = () => {
             <li>
               <button
                 onClick={() => navigate(`/MechanicLogin`)}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
+                className="block py-2 px-4 text-[#CED46A] hover:text-[#CED46A] cursor-pointer"
               >
-                mechanic login
+                Mechanic Login
               </button>
             </li>
             <li>
               <button
                 onClick={handleSignOut}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
+                className="block py-2 px-4 text-[#CED46A] hover:text-[#CED46A] cursor-pointer"
               >
                 Sign Out
               </button>
@@ -154,14 +153,14 @@ const Header = () => {
             <li className="relative">
               <button
                 onClick={() => setShowNotifications((prev) => !prev)}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline cursor-pointer"
+                className="block py-2 px-4 text-[#CED46A] hover:text-[#CED46A] cursor-pointer"
               >
                 {menuOpen ? "Notifications" : <NotificationsNoneOutlinedIcon />}
               </button>
 
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                  <div className="p-3 font-semibold text-[#2b2d42] border-b">
+                  <div className="p-3 font-semibold text-[#075538] border-b bg-[#CED46A]">
                     Notifications
                   </div>
                   <ul className="max-h-60 overflow-y-auto">
@@ -169,21 +168,21 @@ const Header = () => {
                       notifications.map((note, idx) => (
                         <li
                           key={idx}
-                          className="px-4 py-2 hover:bg-[#f1f1f1] cursor-pointer"
+                          className="px-4 py-2 hover:bg-[#CED46A]/40 cursor-pointer"
                         >
-                          <p className="font-medium text-sm text-[#2b2d42]">
+                          <p className="font-medium text-sm text-[#075538]">
                             {note.requestType}
                           </p>
-                          <p className="text-xs text-[#8d99ae]">
+                          <p className="text-xs text-gray-600">
                             {note.details}
                           </p>
                           <p
                             className={`text-xs mt-1 font-semibold ${
                               note.status === "pending"
-                                ? "text-yellow-500"
+                                ? "text-yellow-600"
                                 : note.status === "approved"
-                                ? "text-green-600"
-                                : "text-red-500"
+                                ? "text-green-700"
+                                : "text-red-600"
                             }`}
                           >
                             {note.status}
@@ -191,7 +190,7 @@ const Header = () => {
                         </li>
                       ))
                     ) : (
-                      <li className="px-4 py-2 text-sm text-[#8d99ae]">
+                      <li className="px-4 py-2 text-sm text-gray-500">
                         No notifications yet
                       </li>
                     )}

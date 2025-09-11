@@ -1,8 +1,8 @@
 const AboutUs = () => {
   return (
-    <div className="min-h-screen bg-[#f8f9fa] text-[#2b2d42] animate-fadeUp">
+    <div className="min-h-screen bg-[#f8f9fa] text-[#075538] animate-fadeUp">
       {/* Hero the top one*/}
-      <section className="bg-[#2b2d42] text-white py-16 px-4 text-center">
+      <section className="bg-[#075538] text-white py-16 px-4 text-center">
         <h1 className="text-4xl font-bold mb-4">About RoadMate</h1>
         <p className="max-w-2xl mx-auto text-lg">
           Your roadside hero — connecting drivers to real-time, verified
@@ -14,7 +14,6 @@ const AboutUs = () => {
       <section className="py-12 px-4 max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-center mb-8">What We Offer</h2>
         <div className="grid gap-6 md:grid-cols-3">
-          {/* will hard code then later will come up with a strategy */}
           {[
             {
               title: "On-Demand Mechanics",
@@ -33,9 +32,11 @@ const AboutUs = () => {
               key={idx}
               className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition"
             >
-              <h3 className="text-xl font-semibold mb-2">{card.title}</h3>
+              <h3 className="text-xl font-semibold mb-2 text-[#075538]">
+                {card.title}
+              </h3>
               <p className="text-gray-600 mb-4">{card.text}</p>
-              <div className="w-16 h-1 mx-auto bg-[#2b2d42] rounded-full" />
+              <div className="w-16 h-1 mx-auto bg-[#CED46A] rounded-full" />
             </div>
           ))}
         </div>
@@ -43,7 +44,9 @@ const AboutUs = () => {
 
       {/* Team Members */}
       <section className="py-12 px-4 bg-white max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-8">Meet the Team</h2>
+        <h2 className="text-3xl font-bold text-center mb-8 text-[#075538]">
+          Meet the Team
+        </h2>
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
           {[
             {
@@ -72,7 +75,9 @@ const AboutUs = () => {
                 alt={member.name}
                 className="w-24 h-24 mx-auto rounded-full object-cover mb-4"
               />
-              <h4 className="text-xl font-semibold">{member.name}</h4>
+              <h4 className="text-xl font-semibold text-[#075538]">
+                {member.name}
+              </h4>
               <p className="text-sm text-gray-600">{member.role}</p>
             </div>
           ))}
@@ -81,38 +86,46 @@ const AboutUs = () => {
 
       {/* Testimonials */}
       <section className="py-12 px-4 bg-[#f1f1f1] text-center">
-        <h2 className="text-3xl font-bold mb-8">What Our Users Say</h2>
+        <h2 className="text-3xl font-bold mb-8 text-[#075538]">
+          What Our Users Say
+        </h2>
         <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
           <div className="bg-white p-6 rounded-xl shadow">
             <p className="italic text-gray-700">
               “E-AutoCare saved my road trip! Found a mechanic in minutes.”
             </p>
-            <p className="mt-4 font-semibold">— James K., Nairobi</p>
+            <p className="mt-4 font-semibold text-[#075538]">
+              — James K., Nairobi
+            </p>
           </div>
           <div className="bg-white p-6 rounded-xl shadow">
             <p className="italic text-gray-700">
               “Finally, a map-based tool that works and feels smooth!”
             </p>
-            <p className="mt-4 font-semibold">— Anita M., Kisumu</p>
+            <p className="mt-4 font-semibold text-[#075538]">
+              — Anita M., Kisumu
+            </p>
           </div>
         </div>
       </section>
 
       {/* Call to Action */}
       <section className="py-10 bg-[#eaeaea] text-center">
-        <h3 className="text-2xl font-semibold mb-2">Need a mechanic now?</h3>
+        <h3 className="text-2xl font-semibold mb-2 text-[#075538]">
+          Need a mechanic now?
+        </h3>
         <p className="text-gray-700 mb-4">
           Use the E-AutoCare map to request real-time help near you.
         </p>
         <a
           href="/"
-          className="inline-block bg-[#2b2d42] text-white px-6 py-3 rounded-md hover:bg-[#1f2034] transition"
+          className="inline-block bg-[#075538] text-[#CED46A] px-6 py-3 rounded-md hover:bg-[#06452d] transition"
         >
           Go to Map
         </a>
       </section>
 
-      {/* Animation styles to make it smoothly appear on page load*/}
+      {/* Animation styles */}
       <style>{`
         .animate-fadeUp {
           animation: fadeUp 0.6s ease-out;

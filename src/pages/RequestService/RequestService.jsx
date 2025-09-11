@@ -106,7 +106,7 @@ const RequestService = () => {
     html: `
       <div class='flex flex-col items-center'>
         <img src='${user?.imageUrl}' class='w-10 h-10 rounded-full border-2 border-white shadow-md object-cover' />
-        <div class='w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#2b2d42] mt-[-2px]'></div>
+        <div class='w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#075538] mt-[-2px]'></div>
       </div>
     `,
     iconSize: [50, 60],
@@ -164,7 +164,7 @@ const RequestService = () => {
     }
   }, []);
 
-  // Send live location to backend via socket 'has a bug will look at it'
+  // Send live location to backend via socket
   useEffect(() => {
     if (!user?.id) return;
 
@@ -205,7 +205,7 @@ const RequestService = () => {
   if (!isLoaded) return <div className="text-center p-4">Loading...</div>;
 
   return (
-    <div className="relative h-screen w-full">
+    <div className="relative h-screen w-full bg-[#CED46A]">
       {position && (
         <MapContainer
           center={position}
@@ -223,8 +223,8 @@ const RequestService = () => {
             center={position}
             radius={circleRadius}
             pathOptions={{
-              fillColor: "#ff3333",
-              color: "#cc0000",
+              fillColor: "#CED46A",
+              color: "#075538",
               fillOpacity: 0.3,
             }}
           />
@@ -237,8 +237,8 @@ const RequestService = () => {
       )}
 
       {/* Location Info */}
-      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md shadow-md rounded-md px-4 py-2 z-[1000]">
-        <p className="text-sm text-[#2b2d42] font-medium">
+      <div className="absolute top-4 left-4 bg-[#CED46A]/90 backdrop-blur-md shadow-md rounded-md px-4 py-2 z-[1000] border border-[#075538]">
+        <p className="text-sm text-[#075538] font-medium">
           Current area: {locationInfo || "Detecting..."}
         </p>
       </div>
@@ -246,19 +246,19 @@ const RequestService = () => {
       {/* Bottom Form */}
       {!openForm && (
         <div className="absolute bottom-0 left-0 w-full z-[1000]">
-          <div className="bg-white/80 backdrop-blur-md max-w-xl mx-auto m-4 p-6 rounded-xl shadow-xl space-y-6 animate-slideUp">
-            <h2 className="text-2xl font-bold text-[#2b2d42]">
+          <div className="bg-[#CED46A]/95 backdrop-blur-md max-w-xl mx-auto m-4 p-6 rounded-xl shadow-xl space-y-6 animate-slideUp border border-[#075538]">
+            <h2 className="text-2xl font-bold text-[#075538]">
               Request Service from Mechanic #{id}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[#2b2d42] font-medium mb-1">
-                  Car requestType
+                <label className="block text-[#075538] font-medium mb-1">
+                  Car Request Type
                 </label>
                 <select
                   value={requestType}
                   onChange={(e) => setRequestType(e.target.value)}
-                  className="w-full p-3 border border-[#8d99ae] rounded-md"
+                  className="w-full p-3 border border-[#075538] rounded-md bg-white text-[#075538]"
                   required
                 >
                   <option value="">Select type</option>
@@ -268,7 +268,7 @@ const RequestService = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-[#2b2d42] font-medium mb-1">
+                <label className="block text-[#075538] font-medium mb-1">
                   Brief Problem Description
                 </label>
                 <textarea
@@ -276,7 +276,7 @@ const RequestService = () => {
                   onChange={(e) => setIssue(e.target.value)}
                   rows={3}
                   placeholder="Describe what's wrong..."
-                  className="w-full p-3 border border-[#8d99ae] rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-[#2b2d42]"
+                  className="w-full p-3 border border-[#075538] rounded-md bg-white text-[#075538] resize-none focus:outline-none focus:ring-2 focus:ring-[#075538]"
                   required
                 />
               </div>
@@ -285,8 +285,8 @@ const RequestService = () => {
                 disabled={submitting}
                 className={`w-full py-3 rounded-md font-semibold text-white transition ${
                   submitting
-                    ? "bg-[#8d99ae] cursor-not-allowed"
-                    : "bg-[#2b2d42] hover:bg-[#1f2034]"
+                    ? "bg-[#CED46A] text-[#075538] cursor-not-allowed"
+                    : "bg-[#075538] hover:bg-[#05492f]"
                 }`}
               >
                 {submitting ? "Submitting..." : "Submit Request"}

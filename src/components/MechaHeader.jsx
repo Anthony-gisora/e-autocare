@@ -27,7 +27,6 @@ const MechanicHeader = () => {
       const res = await axios.get(
         "https://roadmateassist.onrender.com/api/notifications/reqNotification"
       );
-      // Filter only in-progress requests
       const inProgressOnly = res.data.filter(
         (note) => note.status?.toLowerCase() === "inprogress"
       );
@@ -49,7 +48,6 @@ const MechanicHeader = () => {
         message: "Your request has been completed by the mechanic.",
       });
 
-      // Refresh in-progress notifications
       fetchInProgressNotifications();
     } catch (error) {
       console.error("Error completing request:", error);
@@ -71,22 +69,25 @@ const MechanicHeader = () => {
   return (
     <header className="w-full bg-white shadow-md fixed top-0 left-0 z-[2000]">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between relative">
+        {/* User greeting */}
         <div className="flex items-center space-x-3 cursor-pointer">
           <UserButton />
-          <span className="font-bold text-[#2b2d42] hidden sm:inline">
+          <span className="font-bold text-[#075538] hidden sm:inline">
             Hi, {user?.firstName}
           </span>
         </div>
 
+        {/* Mobile menu toggle */}
         <div className="flex sm:hidden cursor-pointer">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="text-[#2b2d42]"
+            className="text-[#075538]"
           >
             {menuOpen ? <CloseOutlinedIcon /> : <MenuOutlinedIcon />}
           </button>
         </div>
 
+        {/* Nav Menu */}
         <nav
           className={`${
             menuOpen ? "block" : "hidden"
@@ -96,7 +97,7 @@ const MechanicHeader = () => {
             <li>
               <button
                 onClick={() => navigate("/mechanicHome")}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline"
+                className="block py-2 px-4 text-[#075538] hover:text-[#CED46A] transition"
               >
                 Home
               </button>
@@ -104,7 +105,7 @@ const MechanicHeader = () => {
             <li>
               <button
                 onClick={() => navigate("/MechanicLogin")}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline"
+                className="block py-2 px-4 text-[#075538] hover:text-[#CED46A] transition"
               >
                 Switch Account
               </button>
@@ -112,26 +113,28 @@ const MechanicHeader = () => {
             <li>
               <button
                 onClick={handleSignOut}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline"
+                className="block py-2 px-4 text-[#075538] hover:text-[#CED46A] transition"
               >
                 Sign Out
               </button>
             </li>
+
+            {/* Notifications */}
             <li className="relative">
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="block py-2 px-4 text-[#2b2d42] hover:underline"
+                className="block py-2 px-4 text-[#075538] hover:text-[#CED46A] transition"
               >
                 {menuOpen ? "Notifications" : <NotificationsNoneOutlinedIcon />}
               </button>
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-72 bg-white border rounded-lg shadow-lg z-50">
-                  <div className="p-3 font-semibold text-[#2b2d42] border-b">
+                  <div className="p-3 font-semibold text-[#075538] border-b bg-[#f9fafb]">
                     In-Progress Requests
                   </div>
                   <ul className="max-h-60 overflow-y-auto">
                     {notifications.length === 0 ? (
-                      <li className="px-4 py-2 text-sm text-[#8d99ae]">
+                      <li className="px-4 py-2 text-sm text-gray-500">
                         No in-progress requests
                       </li>
                     ) : (
@@ -140,14 +143,14 @@ const MechanicHeader = () => {
                           key={index}
                           className="px-4 py-2 hover:bg-[#f1f1f1] cursor-pointer"
                         >
-                          <p className="font-medium text-sm text-[#2b2d42]">
+                          <p className="font-medium text-sm text-[#075538]">
                             {note.requestType || "Request"}
                           </p>
-                          <p className="text-xs text-[#8d99ae] mb-2">
+                          <p className="text-xs text-gray-500 mb-2">
                             {note.details || "No details provided"}
                           </p>
                           <button
-                            className="text-xs bg-green-600 text-white px-3 py-1 rounded"
+                            className="text-xs bg-[#075538] hover:bg-[#05432d] text-white px-3 py-1 rounded transition"
                             onClick={() => markComplete(note._id)}
                           >
                             Complete

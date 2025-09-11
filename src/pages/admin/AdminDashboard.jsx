@@ -83,7 +83,8 @@ const AdminDashboard = () => {
     { name: "Completed", value: totalCompleted },
   ];
 
-  const COLORS = ["#FBBF24", "#3B82F6", "#10B981"];
+  // Custom Colors
+  const COLORS = ["#CED46A", "#3B82F6", "#075538"];
 
   // Bar Chart Data
   const barData = [
@@ -92,7 +93,7 @@ const AdminDashboard = () => {
     { name: "Mechanics", value: mechanics.length },
   ];
 
-  //  Generate weekly progress data dynamically with actual data
+  //  Generate weekly progress data dynamically
   useEffect(() => {
     if (requests.length > 0) {
       const grouped = {};
@@ -116,7 +117,6 @@ const AdminDashboard = () => {
         if (status === "completed") grouped[week].completed += 1;
       });
 
-      // Sort weeks numerically
       const formatted = Object.values(grouped).sort((a, b) => {
         const aNum = parseInt(a.name.replace("Week ", ""), 10);
         const bNum = parseInt(b.name.replace("Week ", ""), 10);
@@ -128,70 +128,82 @@ const AdminDashboard = () => {
   }, [requests]);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-6 sm:mb-8">
+    <div className="p-4 mt-10 sm:p-6 lg:p-8 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#075538] mb-6 sm:mb-8">
         📊 Admin Dashboard
       </h1>
 
       {/* 🔹 Top Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-6 mb-8">
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
-          <ClipboardList className="text-blue-500 w-8 h-8 sm:w-10 sm:h-10" />
+          <ClipboardList className="text-[#075538] w-8 h-8 sm:w-10 sm:h-10" />
           <div>
             <h3 className="text-sm sm:text-base font-semibold text-gray-600">
               Total Requests
             </h3>
-            <p className="text-xl sm:text-2xl font-bold">{requests.length}</p>
+            <p className="text-xl sm:text-2xl font-bold text-[#075538]">
+              {requests.length}
+            </p>
           </div>
         </div>
 
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
-          <Users className="text-indigo-500 w-8 h-8 sm:w-10 sm:h-10" />
+          <Users className="text-[#CED46A] w-8 h-8 sm:w-10 sm:h-10" />
           <div>
             <h3 className="text-sm sm:text-base font-semibold text-gray-600">
               Users
             </h3>
-            <p className="text-xl sm:text-2xl font-bold">{users.length}</p>
+            <p className="text-xl sm:text-2xl font-bold text-[#075538]">
+              {users.length}
+            </p>
           </div>
         </div>
 
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
-          <Wrench className="text-red-500 w-8 h-8 sm:w-10 sm:h-10" />
+          <Wrench className="text-[#075538] w-8 h-8 sm:w-10 sm:h-10" />
           <div>
             <h3 className="text-sm sm:text-base font-semibold text-gray-600">
               Mechanics
             </h3>
-            <p className="text-xl sm:text-2xl font-bold">{mechanics.length}</p>
+            <p className="text-xl sm:text-2xl font-bold text-[#075538]">
+              {mechanics.length}
+            </p>
           </div>
         </div>
 
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
-          <Clock className="text-yellow-500 w-8 h-8 sm:w-10 sm:h-10" />
+          <Clock className="text-[#CED46A] w-8 h-8 sm:w-10 sm:h-10" />
           <div>
             <h3 className="text-sm sm:text-base font-semibold text-gray-600">
               Pending
             </h3>
-            <p className="text-xl sm:text-2xl font-bold">{totalPending}</p>
+            <p className="text-xl sm:text-2xl font-bold text-[#075538]">
+              {totalPending}
+            </p>
           </div>
         </div>
 
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
-          <Clock className="text-blue-500 w-8 h-8 sm:w-10 sm:h-10" />
+          <Clock className="text-[#075538] w-8 h-8 sm:w-10 sm:h-10" />
           <div>
             <h3 className="text-sm sm:text-base font-semibold text-gray-600">
               In Progress
             </h3>
-            <p className="text-xl sm:text-2xl font-bold">{totalInProgress}</p>
+            <p className="text-xl sm:text-2xl font-bold text-[#075538]">
+              {totalInProgress}
+            </p>
           </div>
         </div>
 
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow flex items-center gap-4">
-          <CheckCircle className="text-green-500 w-8 h-8 sm:w-10 sm:h-10" />
+          <CheckCircle className="text-[#CED46A] w-8 h-8 sm:w-10 sm:h-10" />
           <div>
             <h3 className="text-sm sm:text-base font-semibold text-gray-600">
               Completed
             </h3>
-            <p className="text-xl sm:text-2xl font-bold">{totalCompleted}</p>
+            <p className="text-xl sm:text-2xl font-bold text-[#075538]">
+              {totalCompleted}
+            </p>
           </div>
         </div>
       </div>
@@ -200,7 +212,7 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Bar Chart */}
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow">
-          <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-700">
+          <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#075538]">
             Overview
           </h2>
           <ResponsiveContainer width="100%" height={250}>
@@ -209,14 +221,14 @@ const AdminDashboard = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" fill="#3B82F6" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="value" fill="#075538" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Pie Chart */}
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow">
-          <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-700">
+          <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#075538]">
             Requests Status
           </h2>
           <ResponsiveContainer width="100%" height={250}>
@@ -241,9 +253,9 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Line Chart for Progress should be dynamic with actual data update */}
+      {/* Line Chart */}
       <div className="bg-white p-4 sm:p-6 rounded-xl shadow mb-8">
-        <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-700">
+        <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#075538]">
           Service Progress Trends
         </h2>
         <ResponsiveContainer width="100%" height={300}>
@@ -256,7 +268,7 @@ const AdminDashboard = () => {
             <Line
               type="monotone"
               dataKey="pending"
-              stroke="#FBBF24"
+              stroke="#CED46A"
               strokeWidth={2}
               name="Pending"
             />
@@ -270,7 +282,7 @@ const AdminDashboard = () => {
             <Line
               type="monotone"
               dataKey="completed"
-              stroke="#10B981"
+              stroke="#075538"
               strokeWidth={2}
               name="Completed"
             />
@@ -280,12 +292,12 @@ const AdminDashboard = () => {
 
       {/* Recent Requests Table */}
       <div className="bg-white p-4 sm:p-6 rounded-xl shadow">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
+        <h2 className="text-xl font-bold text-[#075538] mb-4">
           Recent Requests
         </h2>
         <div className="overflow-x-auto">
           <table className="min-w-full text-left border rounded-lg overflow-hidden text-sm sm:text-base">
-            <thead className="bg-gray-200 text-gray-700 sticky top-0">
+            <thead className="bg-[#CED46A] text-[#075538] sticky top-0">
               <tr>
                 <th className="py-3 px-4 border">Type</th>
                 <th className="py-3 px-4 border">Details</th>
@@ -297,7 +309,7 @@ const AdminDashboard = () => {
               {requests.slice(0, 8).map((req) => (
                 <tr
                   key={req._id}
-                  className="hover:bg-gray-100 transition duration-200"
+                  className="hover:bg-[#CED46A]/20 transition duration-200"
                 >
                   <td className="py-3 px-4 border">{req.requestType}</td>
                   <td className="py-3 px-4 border truncate max-w-[200px] sm:max-w-[300px]">
@@ -306,9 +318,9 @@ const AdminDashboard = () => {
                   <td
                     className={`py-3 px-4 border font-semibold ${
                       req.status?.toLowerCase() === "pending"
-                        ? "text-yellow-600"
+                        ? "text-[#CED46A]"
                         : req.status?.toLowerCase() === "completed"
-                        ? "text-green-600"
+                        ? "text-[#075538]"
                         : "text-blue-600"
                     }`}
                   >

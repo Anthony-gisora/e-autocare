@@ -158,7 +158,7 @@ const MechanicHome = () => {
   });
 
   return (
-    <div className="p-2 space-y-6 bg-[#075538] min-h-screen">
+    <div className="mt-14 p-2 space-y-6 bg-[#075538] min-h-screen">
       {/* Top Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-[#CED46A] text-[#075538] p-4 rounded-lg shadow">

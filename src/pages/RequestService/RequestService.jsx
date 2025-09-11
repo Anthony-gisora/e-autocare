@@ -97,7 +97,7 @@ const RequestService = () => {
     requestType,
     details: issue,
     mechaID: id,
-    position,
+    location: position,
   };
 
   // Profile icon

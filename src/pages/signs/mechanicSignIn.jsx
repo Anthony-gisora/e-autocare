@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useUser } from "@clerk/clerk-react";
 
 const URL_API = "https://roadmateassist.onrender.com/api/auth/login";
 
@@ -11,6 +12,7 @@ const MechanicLogin = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const { user } = useUser();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,6 +23,7 @@ const MechanicLogin = () => {
       const res = await axios.post(URL_API, {
         personalNumber,
         password,
+        mechCLkId: user.id,
       });
 
       const mechanic = res.data;
@@ -30,6 +33,7 @@ const MechanicLogin = () => {
       navigate("/mechanicHome");
     } catch (err) {
       console.error("Login error:", err.message);
+      setError("Check PersonalNumber, Password or email logged through");
       setLoading(false);
     }
   };

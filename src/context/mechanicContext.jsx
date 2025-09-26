@@ -12,7 +12,6 @@ export const MechanicProvider = ({ children }) => {
 
   useEffect(() => {
     console.log("context provider Loaded... ");
-    console.log(mechanic);
   }, [mechanic, user]);
 
   return (

@@ -48,14 +48,19 @@ const MechanicHome = () => {
 
   const { mechanic } = useMechanic();
 
-  console.log(mechanic);
   const fetchRequests = async () => {
     try {
       const { data } = await axios.get(
         "https://roadmateassist.onrender.com/api/notifications/reqNotification"
       );
       setRequests(data.filter((req) => req.status === "pending"));
-      setCompletedJobs(data.filter((req) => req.status === "completed"));
+      setCompletedJobs(
+        data.filter(
+          (req) =>
+            req.status === "completed" &&
+            mechanic.personalNumber == req.servicedBy
+        )
+      );
     } catch (error) {
       console.error("❌ Error fetching requests:", error);
     }

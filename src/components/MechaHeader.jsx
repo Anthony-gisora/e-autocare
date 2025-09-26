@@ -44,7 +44,7 @@ const MechanicHeader = () => {
     try {
       await axios.put(
         `https://roadmateassist.onrender.com/api/req/update-complete/${id}`,
-        { status: "completed" }
+        { servicedBy: mechanic.personalNumber }
       );
 
       socket.emit("request-updated", {
@@ -123,7 +123,16 @@ const MechanicHeader = () => {
                               {note.status}
                             </p>
                           ) : (
-                            <button onClick={() => markComplete(note.id)}>
+                            <button
+                              className={`text-xs mt-1 font-semibold border p-[3px] rounded-[7px] ${
+                                note.status === "pending"
+                                  ? "text-yellow-600"
+                                  : note.status === "InProgress"
+                                  ? "text-green-700"
+                                  : "text-red-600"
+                              }`}
+                              onClick={() => markComplete(note._id)}
+                            >
                               Complete
                             </button>
                           )}

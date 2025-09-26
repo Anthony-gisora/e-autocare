@@ -214,17 +214,33 @@ const MechanicHeader = () => {
                           <p className="text-xs text-gray-600">
                             {note.details}
                           </p>
-                          <p
-                            className={`text-xs mt-1 font-semibold ${
-                              note.status === "pending"
-                                ? "text-yellow-600"
-                                : note.status === "approved"
-                                ? "text-green-700"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {note.status}
-                          </p>
+
+                          {note.status === "completed" ? (
+                            <p
+                              className={`text-xs mt-1 font-semibold ${
+                                note.status === "pending"
+                                  ? "text-yellow-600"
+                                  : note.status === "approved"
+                                  ? "text-green-700"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {note.status}
+                            </p>
+                          ) : (
+                            <button
+                              className={`text-xs mt-1 font-semibold border p-[3px] rounded-[7px] ${
+                                note.status === "pending"
+                                  ? "text-yellow-600"
+                                  : note.status === "InProgress"
+                                  ? "text-green-700"
+                                  : "text-red-600"
+                              }`}
+                              onClick={() => markComplete(note._id)}
+                            >
+                              Complete
+                            </button>
+                          )}
                         </li>
                       ))
                     ) : (

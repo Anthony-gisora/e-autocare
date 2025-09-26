@@ -6,6 +6,7 @@ import io from "socket.io-client";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import { useMechanic } from "../context/mechanicContext";
 
 const socket = io("https://roadmateassist.onrender.com");
 
@@ -16,6 +17,7 @@ const MechanicHeader = () => {
   const { user } = useUser();
   const { signOut } = useClerk();
   const navigate = useNavigate();
+  const { mechanic } = useMechanic();
 
   const handleSignOut = async () => {
     await signOut();
@@ -28,7 +30,9 @@ const MechanicHeader = () => {
         "https://roadmateassist.onrender.com/api/notifications/reqNotification"
       );
       const inProgressOnly = res.data.filter(
-        (note) => note.status?.toLowerCase() === "inprogress"
+        (note) =>
+          note.status?.toLowerCase() === "inprogress" &&
+          mechanic.personalNumber == note.servicedBy
       );
       setNotifications(inProgressOnly);
     } catch (err) {
@@ -105,17 +109,24 @@ const MechanicHeader = () => {
                           <p className="text-xs text-gray-600">
                             {note.details}
                           </p>
-                          <p
-                            className={`text-xs mt-1 font-semibold ${
-                              note.status === "pending"
-                                ? "text-yellow-600"
-                                : note.status === "approved"
-                                ? "text-green-700"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {note.status}
-                          </p>
+
+                          {note.status === "completed" ? (
+                            <p
+                              className={`text-xs mt-1 font-semibold ${
+                                note.status === "pending"
+                                  ? "text-yellow-600"
+                                  : note.status === "approved"
+                                  ? "text-green-700"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {note.status}
+                            </p>
+                          ) : (
+                            <button onClick={() => markComplete(note.id)}>
+                              Complete
+                            </button>
+                          )}
                         </li>
                       ))
                     ) : (

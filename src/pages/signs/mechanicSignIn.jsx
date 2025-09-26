@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
+import { useMechanic } from "../../context/mechanicContext";
 
 const URL_API = "https://roadmateassist.onrender.com/api/auth/login";
 
@@ -13,6 +14,7 @@ const MechanicLogin = () => {
 
   const navigate = useNavigate();
   const { user } = useUser();
+  const { setMechanic } = useMechanic();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,6 +30,7 @@ const MechanicLogin = () => {
 
       const mechanic = res.data;
       console.log(mechanic);
+      setMechanic(mechanic.mechanic);
 
       setLoading(false);
       navigate("/mechanicHome");

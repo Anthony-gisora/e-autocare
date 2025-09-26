@@ -13,6 +13,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { useMechanic } from "../../../context/mechanicContext";
 
 const SOCKET_URI = "https://roadmateassist.onrender.com";
 
@@ -45,6 +46,9 @@ const MechanicHome = () => {
   const [mapCenter, setMapCenter] = useState(null);
   const [driverLocation, setDriverLocation] = useState(null);
 
+  const { mechanic } = useMechanic();
+
+  console.log(mechanic);
   const fetchRequests = async () => {
     try {
       const { data } = await axios.get(
@@ -60,7 +64,8 @@ const MechanicHome = () => {
   const updateStatus = async (id) => {
     try {
       await axios.put(
-        `https://roadmateassist.onrender.com/api/req/update-status/${id}`
+        `https://roadmateassist.onrender.com/api/req/update-status/${id}`,
+        { status: "inProgress", servicedBy: mechanic.personalNumber }
       );
       fetchRequests();
     } catch (error) {

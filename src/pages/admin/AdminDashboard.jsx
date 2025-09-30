@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   BarChart,
@@ -22,6 +22,10 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [mechanics, setMechanics] = useState([]);
   const [progressData, setProgressData] = useState([]);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ status: "", servicedBy: "" });
 
   // Fetch Requests
   const fetchRequests = async () => {
@@ -38,10 +42,10 @@ const AdminDashboard = () => {
   // Fetch Users
   const fetchUsers = async () => {
     try {
-      const { data } = await axios.get(
-        "https://roadmateassist.onrender.com/api/users"
-      );
-      setUsers(data);
+      axios
+        .get("https://roadmateassist.onrender.com/api/admin/clerkUsers")
+        .then((res) => setUsers(res.data))
+        .catch((err) => console.error(err));
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -51,11 +55,86 @@ const AdminDashboard = () => {
   const fetchMechanics = async () => {
     try {
       const { data } = await axios.get(
-        "https://roadmateassist.onrender.com/api/admin/mechanic-requests"
+        "https://roadmateassist.onrender.com/api/admin/mechanics"
       );
       setMechanics(data);
     } catch (error) {
       console.error("Error fetching mechanics:", error);
+    }
+  };
+
+  // weekly trends
+  useEffect(() => {
+    if (requests.length > 0) {
+      const grouped = {};
+
+      requests.forEach((req) => {
+        const date = new Date(req.createdAt);
+        const week = `Week ${Math.ceil(date.getDate() / 7)}`;
+
+        if (!grouped[week]) {
+          grouped[week] = {
+            name: week,
+            pending: 0,
+            inProgress: 0,
+            completed: 0,
+          };
+        }
+
+        const status = req.status?.toLowerCase();
+        if (status === "pending") grouped[week].pending += 1;
+        if (status === "inprogress") grouped[week].inProgress += 1;
+        if (status === "completed") grouped[week].completed += 1;
+      });
+
+      const formatted = Object.values(grouped).sort((a, b) => {
+        const aNum = parseInt(a.name.replace("Week ", ""), 10);
+        const bNum = parseInt(b.name.replace("Week ", ""), 10);
+        return aNum - bNum;
+      });
+
+      setProgressData(formatted);
+    }
+  }, [requests]);
+
+  // handle open modal
+  const handleView = (req) => {
+    setSelectedRequest(req);
+    setIsEditing(false);
+    setShowModal(true);
+  };
+
+  const handleEdit = (req) => {
+    setSelectedRequest(req);
+    setFormData({
+      status: req.status || "",
+      servicedBy: req.servicedBy || "",
+    });
+    setIsEditing(true);
+    setShowModal(true);
+  };
+
+  // handle update
+  const handleUpdate = async () => {
+    try {
+      if (formData.status.toLowerCase() === "pending") {
+        await axios.post(
+          "https://roadmateassist.onrender.com/api/req/requests",
+          { ...selectedRequest, status: "pending" }
+        );
+      } else {
+        await axios.put(
+          `https://roadmateassist.onrender.com/api/req/update-status/${selectedRequest._id}`,
+          {
+            status: formData.status,
+            servicedBy: formData.servicedBy,
+          }
+        );
+      }
+      setShowModal(false);
+      fetchRequests();
+    } catch (error) {
+      console.error("Error updating request:", error);
     }
   };
 
@@ -303,6 +382,7 @@ const AdminDashboard = () => {
                 <th className="py-3 px-4 border">Details</th>
                 <th className="py-3 px-4 border">Status</th>
                 <th className="py-3 px-4 border">Date</th>
+                <th className="py-3 px-4 border text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -329,11 +409,25 @@ const AdminDashboard = () => {
                   <td className="py-3 px-4 border whitespace-nowrap">
                     {new Date(req.createdAt).toLocaleString()}
                   </td>
+                  <td className="py-3 px-4 border text-center">
+                    <button
+                      onClick={() => handleView(req)}
+                      className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 mr-2"
+                    >
+                      View
+                    </button>
+                    <button
+                      onClick={() => handleEdit(req)}
+                      className="px-3 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600"
+                    >
+                      Edit
+                    </button>
+                  </td>
                 </tr>
               ))}
               {requests.length === 0 && (
                 <tr>
-                  <td colSpan="4" className="text-center py-6 text-gray-500">
+                  <td colSpan="5" className="text-center py-6 text-gray-500">
                     No requests available.
                   </td>
                 </tr>
@@ -342,6 +436,84 @@ const AdminDashboard = () => {
           </table>
         </div>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+            {!isEditing ? (
+              <>
+                <h3 className="text-xl font-bold mb-4 text-[#075538]">
+                  Request Details
+                </h3>
+                <p>
+                  <strong>Type:</strong> {selectedRequest.requestType}
+                </p>
+                <p>
+                  <strong>Details:</strong> {selectedRequest.details}
+                </p>
+                <p>
+                  <strong>Status:</strong> {selectedRequest.status}
+                </p>
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(selectedRequest.createdAt).toLocaleString()}
+                </p>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="mt-4 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                >
+                  Close
+                </button>
+              </>
+            ) : (
+              <>
+                <h3 className="text-xl font-bold mb-4 text-[#075538]">
+                  Edit Request
+                </h3>
+                <label className="block mb-2 font-semibold">Status</label>
+                <select
+                  value={formData.status}
+                  onChange={(e) =>
+                    setFormData({ ...formData, status: e.target.value })
+                  }
+                  className="w-full border px-3 py-2 rounded mb-4"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="inProgress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+
+                <label className="block mb-2 font-semibold">Serviced By</label>
+                <input
+                  type="text"
+                  value={formData.servicedBy}
+                  onChange={(e) =>
+                    setFormData({ ...formData, servicedBy: e.target.value })
+                  }
+                  placeholder="Mechanic name"
+                  className="w-full border px-3 py-2 rounded mb-4"
+                />
+
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleUpdate}
+                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                  >
+                    Save
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

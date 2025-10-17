@@ -21,6 +21,7 @@ const AdminDashboard = () => {
   const [requests, setRequests] = useState([]);
   const [users, setUsers] = useState([]);
   const [mechanics, setMechanics] = useState([]);
+  const [pendingMechanics, setPendingMechanics] = useState([]);
   const [progressData, setProgressData] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -138,10 +139,23 @@ const AdminDashboard = () => {
     }
   };
 
+  const getAllPendingMechanics = async () => {
+    try {
+      const { data } = await axios.get(
+        "https://roadmateassist.onrender.com/api/admin/mechanic-requests"
+      );
+      setPendingMechanics(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching mechanics:", error);
+    }
+  };
+
   useEffect(() => {
     fetchRequests();
     fetchUsers();
     fetchMechanics();
+    getAllPendingMechanics();
   }, []);
 
   // top cards data from API
@@ -514,6 +528,169 @@ const AdminDashboard = () => {
           </div>
         </div>
       )}
+
+      {/* 🔹 Advanced Monitoring Section */}
+      {/* 🔸 Combined Charts Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Service Demand Mapping (Statistical Analysis) */}
+        <div className="bg-white p-6 rounded-xl shadow">
+          <h2 className="text-xl font-bold text-[#075538] mb-4">
+            Service Demand Mapping (Statistical)
+          </h2>
+          <p className="text-gray-700 mb-4">
+            Statistical mapping of service types based on demand distribution.
+          </p>
+
+          {/* 🔸 Prepare data dynamically for chart */}
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={
+                requests.length > 0
+                  ? (() => {
+                      const freq = {};
+                      requests.forEach((r) => {
+                        freq[r.requestType] = (freq[r.requestType] || 0) + 1;
+                      });
+                      return Object.entries(freq).map(([name, value]) => ({
+                        name,
+                        value,
+                      }));
+                    })()
+                  : []
+              }
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#075538" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+
+          <p className="text-gray-600 mt-4">
+            The chart shows how service categories contribute to total workload,
+            identifying areas with highest demand.
+          </p>
+        </div>
+
+        {/* Service Performance Trend */}
+        <div className="bg-white p-6 rounded-xl shadow">
+          <h2 className="text-xl font-bold text-[#075538] mb-4">
+            Service Performance Comparison
+          </h2>
+          <p className="text-gray-700 mb-4">
+            Comparing performance trends between pending, ongoing, and completed
+            tasks over the month.
+          </p>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={progressData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="pending"
+                stroke="#CED46A"
+                strokeWidth={2}
+              />
+              <Line
+                type="monotone"
+                dataKey="inProgress"
+                stroke="#3B82F6"
+                strokeWidth={2}
+              />
+              <Line
+                type="monotone"
+                dataKey="completed"
+                stroke="#075538"
+                strokeWidth={2}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      {/* 🔹 Verification Workflow for Mechanics (KYC) */}
+      <div className="bg-white p-6 rounded-xl shadow mt-8">
+        <h2 className="text-xl font-bold text-[#075538] mb-4">
+          Verification Workflow for Mechanics (KYC)
+        </h2>
+        <p className="text-gray-700 mb-6">
+          This section outlines the current verification process for mechanics —
+          from registration to final approval — ensuring compliance and
+          authenticity.
+        </p>
+
+        {/* Workflow Steps */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="p-4 bg-[#CED46A]/10 border-l-4 border-[#CED46A] rounded-lg shadow-sm">
+            <h4 className="font-semibold text-[#075538] mb-2">
+              1️⃣ Registration
+            </h4>
+            <p className="text-gray-700 text-sm">
+              Mechanic creates an account and submits basic personal details and
+              contact info.
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#075538]/10 border-l-4 border-[#075538] rounded-lg shadow-sm">
+            <h4 className="font-semibold text-[#075538] mb-2">
+              2️⃣ Document Upload
+            </h4>
+            <p className="text-gray-700 text-sm">
+              ID, license, and certification documents are uploaded for
+              verification.
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#CED46A]/10 border-l-4 border-[#CED46A] rounded-lg shadow-sm">
+            <h4 className="font-semibold text-[#075538] mb-2">
+              3️⃣ Background Check
+            </h4>
+            <p className="text-gray-700 text-sm">
+              Admin verifies identity and professional records for authenticity
+              and compliance.
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#075538]/10 border-l-4 border-[#075538] rounded-lg shadow-sm">
+            <h4 className="font-semibold text-[#075538] mb-2">
+              4️⃣ Approval & Activation
+            </h4>
+            <p className="text-gray-700 text-sm">
+              Once verified, the mechanic profile is activated and marked as
+              “Verified”.
+            </p>
+          </div>
+        </div>
+
+        {/* Summary Status Insight */}
+        <div className="mt-6 text-sm text-gray-600">
+          <p>
+            {" "}
+            <span className="font-semibold text-[#075538]">
+              Verified Mechanics:
+            </span>{" "}
+            {mechanics.length}
+          </p>
+          <p>
+            {" "}
+            <span className="font-semibold text-[#075538]">
+              Pending Verification:
+            </span>{" "}
+            {pendingMechanics.length}
+          </p>
+          <p>
+            {" "}
+            <span className="font-semibold text-[#075538]">
+              Rejected Applications:
+            </span>{" "}
+            {mechanics.filter((m) => m.status === "rejected").length}
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

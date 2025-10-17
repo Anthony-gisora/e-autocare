@@ -10,6 +10,7 @@ import MechanicLogin from "./pages/signs/mechanicSignIn";
 import MechanicLayout from "./layouts/MechaLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminHeader from "./components/AdminHeader";
+import ChatScreen from "./pages/chat/chat";
 
 function App() {
   return (
@@ -19,6 +20,14 @@ function App() {
         element={
           <AppLayout>
             <Home />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/chat"
+        element={
+          <AppLayout>
+            <ChatScreen />
           </AppLayout>
         }
       />

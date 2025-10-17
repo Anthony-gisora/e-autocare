@@ -1,4 +1,5 @@
 import { useUser } from "@clerk/clerk-react";
+import axios from "axios";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -59,22 +60,43 @@ const MechanicRequest = () => {
   const [expertise, setExpertise] = useState("");
   const [experience, setExperience] = useState("");
   const [phone, setPhone] = useState("");
-  const [country, setCountry] = useState("Kenya");
   const [county, setCounty] = useState("");
   const [subCounty, setSubCounty] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success("Request submitted successfully!");
 
-    // Clear form
-    setEmail(`${user.firstName}@gmail.com`);
-    setExpertise("");
-    setExperience("");
-    setPhone("");
-    setCountry("Kenya");
-    setCounty("");
-    setSubCounty("");
+    const mechanicData = {
+      clerkUid: user.id,
+      fullName: `${user.firstName} ${user.lastName}`,
+      phone,
+      email,
+      location: `${county}, ${subCounty}, Kenya`,
+      experienceLevel: experience,
+      expertise,
+    };
+
+    try {
+      await axios.post(
+        "http://localhost:5000/api/admin/mechanic-requests",
+        mechanicData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast.success("Request submitted successfully!");
+      setExpertise("");
+      setExperience("");
+      setPhone("");
+      setCounty("");
+      setSubCounty("");
+    } catch (error) {
+      console.log(mechanicData);
+      console.error("Error submitting request:", error);
+      toast.error("Failed to submit request. Try again!");
+    }
   };
 
   return (
@@ -126,7 +148,7 @@ const MechanicRequest = () => {
 
           <div>
             <label className="block text-sm font-medium text-[#075538]">
-              What is your area of expertise? *
+              Area of Expertise *
             </label>
             <textarea
               rows={3}
@@ -140,7 +162,7 @@ const MechanicRequest = () => {
 
           <div>
             <label className="block text-sm font-medium text-[#075538]">
-              What is your level of experience? *
+              Experience Level *
             </label>
             <select
               value={experience}
@@ -149,15 +171,15 @@ const MechanicRequest = () => {
               className="w-full mt-1 p-3 border border-[#075538] rounded-md bg-[#CED46A] text-[#075538]"
             >
               <option value="">-- Select Level --</option>
-              <option value="Basic">Basic</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Professional">Professional</option>
+              <option value="basic">Basic</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="professional">Professional</option>
             </select>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-[#075538]">
-              Enter your primary phone number. *
+              Phone Number *
             </label>
             <input
               type="tel"
@@ -171,20 +193,7 @@ const MechanicRequest = () => {
 
           <div>
             <label className="block text-sm font-medium text-[#075538]">
-              What’s your country of operation? *
-            </label>
-            <input
-              type="text"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              required
-              className="w-full mt-1 p-3 border border-[#075538] rounded-md bg-[#CED46A] text-[#075538]"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-[#075538]">
-              What’s your county of operation? *
+              County *
             </label>
             <select
               value={county}
@@ -203,7 +212,7 @@ const MechanicRequest = () => {
 
           <div>
             <label className="block text-sm font-medium text-[#075538]">
-              What’s your sub-county? *
+              Sub-County *
             </label>
             <input
               type="text"

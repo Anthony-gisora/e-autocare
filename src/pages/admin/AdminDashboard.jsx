@@ -666,29 +666,37 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Summary Status Insight */}
-        <div className="mt-6 text-sm text-gray-600">
-          <p>
-            {" "}
-            <span className="font-semibold text-[#075538]">
-              Verified Mechanics:
-            </span>{" "}
-            {mechanics.length}
-          </p>
-          <p>
-            {" "}
-            <span className="font-semibold text-[#075538]">
-              Pending Verification:
-            </span>{" "}
-            {pendingMechanics.length}
-          </p>
-          <p>
-            {" "}
-            <span className="font-semibold text-[#075538]">
-              Rejected Applications:
-            </span>{" "}
-            {mechanics.filter((m) => m.status === "rejected").length}
-          </p>
+        {/* 🔹 Summary Status Insight */}
+        <div className="mt-8 bg-white shadow-md rounded-xl p-6">
+          <h3 className="text-xl font-bold text-[#075538] mb-4">
+            Summary Status Insight
+          </h3>
+          <div className="space-y-3 text-lg text-gray-700">
+            <p>
+              <span className="font-semibold text-[#075538]">
+                Verified Mechanics:
+              </span>{" "}
+              <span className="ml-2 bg-[#E8F5E9] text-[#075538] font-bold px-3 py-1 rounded">
+                {mechanics.length}
+              </span>
+            </p>
+            <p>
+              <span className="font-semibold text-[#075538]">
+                Pending Verification:
+              </span>{" "}
+              <span className="ml-2 bg-[#FFF8E1] text-[#B68B00] font-bold px-3 py-1 rounded">
+                {pendingMechanics.length}
+              </span>
+            </p>
+            <p>
+              <span className="font-semibold text-[#075538]">
+                Rejected Applications:
+              </span>{" "}
+              <span className="ml-2 bg-[#FFEBEE] text-[#C62828] font-bold px-3 py-1 rounded">
+                {mechanics.filter((m) => m.status === "rejected").length}
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
